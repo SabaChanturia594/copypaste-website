@@ -1,0 +1,12 @@
+.details {
+  padding: 2rem;
+  color: #e0e0e0;
+}
+
+.details h1 {
+  margin-bottom: 1rem;
+}
+
+.details p {
+  color: #ccc;
+}

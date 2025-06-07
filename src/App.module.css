@@ -1,78 +1,13 @@
-.container{
-  width: 500px;
-  margin: 0 auto;
-  padding: 30px;
-  background-color: #1a0026;
-  border-radius: 12px;
-  color: white;
-}
 
-h1{
-  font-size: 30px;
-  color: #e0b3ff;
-  margin-bottom: 18px;
-  text-align: center;
-}
-
-h2{
-  font-size: 1.4rem;
-  color: #e0b3ff;
-  margin-top: 30px;
-  margin-bottom: 10px;
-}
-
-ul{
-  list-style: none;
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-li{
+.app {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  background-color: #2d003d;
-  padding: 10px 15px;
-  border-radius: 5px;
-  color: #e0b3ff;
+  min-height: 100vh;
+  background-color: #121212;
+  color: #e0e0e0;
 }
 
-button{
-  padding: 6px 12px;
-  font-size: 16px;
-  color: white;
-  background-color: #8000ff;
-  transition: 0.3s ease;
+.main {
+  flex: 1; /* Fills available space between header and footer */
+  padding: 2rem;
 }
-
-button:hover{
-  background-color: #9900e6;
-  transform: scale(1.05);
-}
-
-.popup {
-  width: 300px;
-  height: 300px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  font-size: 25px;
-  transform: translate(-50%, -50%);
-  background-color: #1a1818;
-  padding: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 30px;
-}
-
-.popup input{
-  height: 35px;
-  border-radius: 10px;
-  text-align: center;
-}
-
-

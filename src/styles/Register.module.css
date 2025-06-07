@@ -1,0 +1,26 @@
+.login {
+  max-width: 400px;
+  margin: 4rem auto;
+  background-color: #1f1f1f;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(104, 14, 155, 0.3);
+}
+
+.login h1 {
+  color: #b266ff;
+  margin-bottom: 1rem;
+}
+
+.login form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login input {
+  margin-bottom: 1rem;
+}
+
+.login button {
+  align-self: flex-end;
+}
