@@ -9,11 +9,14 @@ import ProductDetails from './pages/ProductDetails';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ProfilePage from './pages/ProfilePage';
+import ProfileHeader from './components/ProfileHeader';
 
 export default function App() {
+
+  <Header />
   return (
     <div className={styles.app}>
-      <Header />
       <main className={styles.main}>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -22,6 +25,7 @@ export default function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Routes>
       </main>
       <Footer />

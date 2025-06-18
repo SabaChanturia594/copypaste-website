@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import styles from '../styles/Header.module.css';
-import logo from '../assets/logo.png';
+import logo from '../assets/images/logo.png';
+import menue from '../assets/images/Rectangle.png'
+import notification from '../assets/notification.png'
 
 export default function Header() {
   return (
@@ -19,10 +21,12 @@ export default function Header() {
           <Link to="/products">Products</Link>
           <Link to="/contact">Contact</Link>
         </div>
-        <div className={styles.actions}>
+        {/* <div className={styles.actions}>
           <Link to="/login"><button>Login</button></Link>
           <Link to="/register"><button>Register</button></Link>
-        </div>
+        </div> */}
+        <img src={notification} alt="." />
+        <img src={menue} alt="." />
       </nav>
     </header>
     

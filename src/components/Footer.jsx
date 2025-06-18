@@ -12,11 +12,11 @@ export default function Footer() {
         <h4>LANGUAGE</h4>
         <select>
           <option value="en">English</option>
-          <option value="de">Deutsch</option>
+          <option value="ru">Russian</option>
           <option value="eo">Esperanto</option>
           <option value="fr">Français</option>
           <option value="hu">Magyar</option>
-          <option value="nl">Nederlands</option>
+          <option value="geo">Georgians</option>
         </select>
       </div>
     </footer>

@@ -89,3 +89,16 @@
     gap: 1rem;
   }
 }
+/* 
+input{
+  width: 300px;
+  height: 50px;
+  background-color: #111315;
+  color: white;
+  border-color:#8c38c0;
+} */
+.nav img{
+  width: 30px;
+  height: auto;
+  cursor: pointer;
+}
