@@ -1,52 +1,25 @@
 .ProfilePage{
     display: flex;
-    gap: 50px;
+    gap: 50px; 
+    height: 100%;
+
 }
 
 .sidebar{
-    width: auto;
-    background-color: #1e1e1e;
-    gap: 20px;
+    width: 230px;
+    background: #1e1e1e;
+    gap: 30px;
+    padding: 40px 40px;
+ 
     display: flex;
     flex-direction: column;
+    max-height: 100%;
 }
 
-.sidebar div{
+.item{
     display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 230px;
-    height: 40px;
+    gap: 15px;
 }
-.sidebar div a{
-    font-size: 16px;
-    letter-spacing:1px;
-    color: #858282;
-    text-decoration: none;
-}
-.sidebar div img{
-    width: 24px;
-    height: auto;
-    margin-left: 40px;
-}
-.sidebar div:nth-child(7){
-    margin-top: 400px;
-}
-.sidebar div:nth-child(8){
-    margin-bottom: 80px;
-}
-.sidebar div:hover{
-    a{
-    font-size: 18px;
-    color: #b266ff;
-    font-weight: 500;
-    }
-    img{
-        width: 26px;
-        height: auto;
-    }
-}
-
 
 
 .myprofile{
@@ -113,3 +86,4 @@
 .card h2{
     color: whitesmoke;
 }
+

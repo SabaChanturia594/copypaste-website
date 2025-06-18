@@ -22,7 +22,7 @@
 .brand {
   font-size: 1.25rem;
   font-weight: bold;
-  color: #b266ff;
+  color: #499BFC;
 }
 
 .nav {
@@ -45,7 +45,7 @@
 }
 
 .links a:hover {
-  color: #b266ff;
+  color: #499BFC;
 }
 
 .actions {

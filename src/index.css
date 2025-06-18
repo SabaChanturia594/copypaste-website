@@ -24,12 +24,12 @@ html, body {
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  height: 100vh;
 }
 
 /* Headings */
 h1, h2, h3, h4 {
-  color: #b266ff;
+  color: #499BFC;
   margin-bottom: 1rem;
 }
 
@@ -52,7 +52,7 @@ p {
 
 /* Links */
 a {
-  color: #b266ff;
+  color: #499BFC;
   text-decoration: none;
   transition: color 0.3s ease;
 }
@@ -90,7 +90,7 @@ input, select, textarea {
 }
 
 input:focus, select:focus, textarea:focus {
-  border-color: #b266ff;
+  border-color: #499BFC;
   outline: none;
 }
 
@@ -127,6 +127,6 @@ footer {
   padding: 2rem 1rem;
   font-size: 0.875rem;
   color: #aaa;
-  margin-top: 4rem;
+
   border-top: 1px solid #333;
 }
