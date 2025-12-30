@@ -5,14 +5,20 @@ export default function ProductCard({ id, title, description, price, views, imag
   const navigate = useNavigate();
 
   return (
-    <div onClick={() => navigate(`/product/${id}`)} className={`${styles.card} cursor-pointer`}>
+    <div
+      onClick={() => navigate(`/product/${id}`)}
+      className={`${styles.card} cursor-pointer`}
+    >
       <img src={image} alt={title} />
-      <h3 className="text-white">{title}</h3>
+
+      <h3>{title}</h3>
       <p>{description}</p>
+
       <div className={styles.footer}>
         <span>{price}</span>
         <span>👁 {views}</span>
       </div>
+
       <div className={styles.viewMore}>View Details</div>
     </div>
   );
