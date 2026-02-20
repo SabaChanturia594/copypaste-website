@@ -1,87 +1,113 @@
-import ProductGrid from '../components/ProductGrid';
-import styles from '../styles/Home.module.css';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, Link } from "react-router-dom";
+import styles from "../styles/Home.module.css";
+import { DATA } from "../data/productsData";
+import { useCart } from "../context/CartContext";
 
-import p1 from '../assets/images/p1.png';
-import p2 from '../assets/images/p2.png';
-import p3 from '../assets/images/p3.png';
-import p4 from '../assets/images/p4.png';
-import p5 from '../assets/images/p5.png';
-import p6 from '../assets/images/p6.png';
-import p7 from '../assets/images/p7.png';
-
-
-/**
- * ✅ არ შევცვალე: კლასები, სტრუქტურა, ProductGrid, sampleProducts სახელი.
- * ✅ დავამატე:
- *  - Home grid-ზე ფოტოები იცვლება (p1,p2,p3...)
- *  - CTA გადადის სწორ ენაზე: /ka/products ან /en/products
- */
-const TEXT = {
-  ka: {
-    heroTitle: 'ატვირთე ფოტო და',
-    heroTitleAccent: 'მოარგე ჩარჩოს',
-    heroSubtitle:
-      'შექმენი შენი პოსტერი A4–დან A3+–მდე • პრიალა ან მატოვი • ჩარჩო / პასპარტუ',
-    cta: 'ნახე ჩვენი დიზაინის პოსტერები',
-    popular: 'პოპულარული პოსტერები',
-    cardDesc: 'მზად დიზაინი • A4 / A3 / A3+',
-  },
-  en: {
-    heroTitle: 'Upload your photo &',
-    heroTitleAccent: 'choose a frame',
-    heroSubtitle:
-      'Create your poster from A4 to A3+ • Glossy or matte • Frame / mat options',
-    cta: 'Browse our poster designs',
-    popular: 'Popular posters',
-    cardDesc: 'Ready designs • A4 / A3 / A3+',
-  },
-};
-
-const IMAGES = [p1, p2, p3, p4, p5, p6, p7];
-function imageByIndex(idx) {
-  return IMAGES[idx % IMAGES.length];
+function getLang(pathname) {
+  const seg = pathname.split("/").filter(Boolean)[0];
+  return seg === "en" ? "en" : "ka";
 }
 
-// ❗ sampleProducts სახელი უცვლელია
-const sampleProducts = Array.from({ length: 9 }, (_, i) => ({
-  id: String(i + 1),
-  title: `Poster Design #${i + 1}`,
-  description: '',
-  price: `${15 + (i % 5) * 5} ₾`,
-  image: imageByIndex(i), // ✅ აქ იცვლება ფოტოები
-}));
+function pickFeatured() {
+  const out = [];
+
+  // აიღე 1-2 პროდუქტი რამდენიმე კატეგორიიდან
+  const keys = Object.keys(DATA);
+  for (const key of keys) {
+    const list = DATA[key];
+    if (Array.isArray(list) && list.length) {
+      const first = list[0];
+      out.push({ categoryKey: key, ...first, routeId: `${key}-${first.id}` });
+    }
+    if (out.length >= 6) break;
+  }
+
+  return out;
+}
 
 export default function Home() {
-  const navigate = useNavigate();
   const { pathname } = useLocation();
+  const lang = getLang(pathname);
+  const base = `/${lang}`;
 
-  const lang = pathname.startsWith('/en') ? 'en' : 'ka';
-  const t = TEXT[lang];
+  const { addToCart } = useCart();
 
-  const localizedProducts = sampleProducts.map((p) => ({
-    ...p,
-    description: t.cardDesc,
-  }));
+  const t = {
+    ka: {
+      title: "Print Studio Copy Paste",
+      sub: "პოსტერები • კარიკატურები • მაისურები • კალენდრები და სხვა",
+      featured: "პოპულარული",
+      details: "დეტალურად",
+      add: "კალათაში",
+      products: "პროდუქცია",
+    },
+    en: {
+      title: "Copy Paste",
+      sub: "Posters • Caricatures • T-Shirts • Calendars & more",
+      featured: "Featured",
+      details: "View details",
+      add: "Add to cart",
+      products: "Products",
+    },
+  }[lang];
+
+  const featured = pickFeatured();
 
   return (
-    <div className={`${styles.home} py-5`}>
+    <main className={styles.page}>
+      {/* HERO (თუ შენთან სხვაა, დატოვე შენი სტრუქტურა; აქ მაგალითია) */}
       <section className={styles.hero}>
-        <h1>
-          {t.heroTitle} <span>{t.heroTitleAccent}</span>
-        </h1>
-        <p>{t.heroSubtitle}</p>
+        <h1>{t.title}</h1>
+        <p>{t.sub}</p>
 
-        {/* ✅ CTA სწორ ენაზე */}
-        <button onClick={() => navigate(`/${lang}/products`)}>
-          {t.cta}
-        </button>
+        <Link className={styles.heroBtn} to={`${base}/products`}>
+          {t.products}
+        </Link>
       </section>
 
-      <section>
-        <h2>{t.popular}</h2>
-        <ProductGrid products={localizedProducts} />
+      {/* FEATURED */}
+      <section className={styles.section}>
+        <div className={styles.head}>
+          <h2>{t.featured}</h2>
+          <Link to={`${base}/products`}>{t.products} →</Link>
+        </div>
+
+        <div className={styles.grid}>
+          {featured.map((p) => (
+            <article key={p.routeId} className={styles.card}>
+              <div className={styles.imgWrap}>
+                <img className={styles.img} src={p.img} alt={p.title} />
+              </div>
+
+              <div className={styles.body}>
+                <h3>{p.title}</h3>
+                <div className={styles.price}>{p.price}</div>
+
+                <div className={styles.actions}>
+                  <Link className={styles.detailsBtn} to={`${base}/product/${p.routeId}`}>
+                    {t.details}
+                  </Link>
+
+                  <button
+                    className={styles.cartBtn}
+                    type="button"
+                    onClick={() =>
+                      addToCart({
+                        routeId: p.routeId,
+                        title: p.title,
+                        price: p.price,
+                        img: p.img,
+                      })
+                    }
+                  >
+                    {t.add}
+                  </button>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
-    </div>
+    </main>
   );
 }

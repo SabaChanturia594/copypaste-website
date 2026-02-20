@@ -1,6 +1,309 @@
+/* src/styles/Products.module.css */
 
+.page {
+  padding: 18px 0 80px;
+}
 
-.products h1 {
-  margin-bottom: 1.5rem;
-  color: #fff;
+/* ---------- TOP / HEADER ---------- */
+
+.top {
+  margin: 14px 16px;
+  padding: 20px;
+  border-radius: 26px;
+  background:
+    radial-gradient(900px 420px at 10% 0%, rgba(199, 14, 168, 0.12), transparent 60%),
+    radial-gradient(900px 420px at 90% 0%, rgba(104, 14, 155, 0.12), transparent 60%),
+    rgba(255, 255, 255, 0.95);
+  border: 1px solid #eef2f7;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.10);
+}
+
+.topInner {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.title {
+  margin: 0;
+  font-size: 50px;
+  font-weight: 950;
+  letter-spacing: -0.03em;
+  color: #0f172a;
+}
+
+.subtitle {
+  margin: 8px 0 0;
+  color: #000000;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 60ch;
+}
+
+.topCta {
+  border: none;
+  cursor: pointer;
+  border-radius: 16px;
+  padding: 12px 16px;
+  font-weight: 950;
+  color: rgb(0, 0, 0);
+  border: 1px solid #eef2f7;
+  background: white;
+  white-space: nowrap;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.topCta:hover {
+  transform: translateY(-2px);
+}
+
+/* ---------- FILTER CHIPS (MOBILE FRIENDLY) ---------- */
+
+.chipsWrap {
+  margin: 16px 16px 0;
+  padding: 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #eef2f7;
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.10);
+
+  display: flex;
+  justify-content: space-around;
+  gap: 10px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  position: sticky;
+  top: 76px; /* უფრო სტაბილურია mobile-ზე */
+  z-index: 40;
+}
+
+.chipsWrap::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  flex-shrink: 0;
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #0f172a;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 900;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
+}
+
+.chip:hover {
+  box-shadow: 0 25px 55px rgba(59, 59, 59, 0.4);
+  transform: translateY(-1px);
+}
+
+/* ---------- SECTIONS ---------- */
+
+.sections {
+  margin-top: 12px;
+}
+
+.section {
+  margin: 18px 16px 0;
+  padding: 20px;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #eef2f7;
+  box-shadow: 0 18px 55px rgba(15, 23, 42, 0.08);
+  scroll-margin-top: 170px;
+}
+
+.sectionHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 980;
+  letter-spacing: -0.03em;
+  color: #0f172a;
+}
+
+.sectionTitle::after {
+  content: "";
+  display: block;
+  width: 120px;
+  height: 4px;
+  margin-top: 10px;
+  border-radius: 999px;
+}
+
+/* ---------- GRID ---------- */
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+}
+
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ---------- CARDS (PREMIUM) ---------- */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 28px;
+  overflow: hidden;
+  background: white;
+  border: 1px solid #eef2f7;
+  box-shadow: 0 25px 70px rgba(15, 23, 42, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 40px 90px rgba(15, 23, 42, 0.14);
+}
+
+/* ---------- IMAGE AREA (9:16) ---------- */
+
+.imgWrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  background:
+    radial-gradient(900px 420px at 10% 0%, rgba(199, 14, 168, 0.10), transparent 60%),
+    radial-gradient(900px 420px at 90% 0%, rgba(104, 14, 155, 0.10), transparent 60%),
+    #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: white;
+}
+
+/* ---------- BODY ---------- */
+
+.body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cardTitle {
+  font-size: 17px;
+  font-weight: 900;
+  color: #0f172a;
+  margin: 0;
+}
+
+.price {
+  font-weight: 950;
+  font-size: 16px;
+  color: #680e9b;
+}
+
+/* ---------- ACTIONS (2 BUTTONS) ---------- */
+
+.actions {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.detailsBtn {
+  text-decoration: none;
+  text-align: center;
+  padding: 12px;
+  border-radius: 16px;
+  font-weight: 950;
+  color: #0f172a;
+  border: 1px solid #e2e8f0;
+  background: white;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.detailsBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.10);
+}
+
+.addBtn {
+  border: none;
+  cursor: pointer;
+  padding: 12px;
+  border-radius: 16px;
+  font-weight: 950;
+  color: rgb(0, 0, 0);
+   border: 1px solid #eef2f7;
+  background: white;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.addBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 25px 55px rgba(59, 59, 59, 0.4);
+}
+
+/* ---------- RESPONSIVE (PHONE) ---------- */
+
+@media (max-width: 520px) {
+  .top {
+    margin: 10px 12px;
+    padding: 16px;
+    border-radius: 22px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .chipsWrap {
+    margin: 12px 12px 0;
+    padding: 10px;
+    border-radius: 18px;
+    top: 64px;
+  }
+
+  .section {
+    margin: 14px 12px 0;
+    padding: 16px;
+    border-radius: 22px;
+    scroll-margin-top: 160px;
+  }
+
+  .sectionTitle {
+    font-size: 26px;
+  }
+
+  .body {
+    padding: 16px;
+  }
+
+  .actions {
+    grid-template-columns: 1fr;
+  }
 }

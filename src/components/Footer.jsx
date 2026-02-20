@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import styles from "../styles/Footer.module.css";
 
 function getLang(pathname) {
   const seg = pathname.split("/").filter(Boolean)[0];
@@ -12,104 +13,139 @@ export default function Footer() {
 
   const t = {
     ka: {
-      note: "© Copy Paste • Printing & Posters",
+      about:
+        "Copy Paste — პოსტერების ბეჭდვა, ფოტოების დამუშავება და კედლის დეკორი ინდივიდუალური დიზაინით.",
+      menu: "მენიუ",
       posters: "პოსტერები",
       builder: "ატვირთე ფოტო",
       contact: "კონტაქტი",
+      info: "ინფო",
       addressTitle: "მისამართი",
       addressValue: "ჭავჭავაძის 26, თბილისი",
       hoursTitle: "სამუშაო საათები",
       hoursValue: "ორშ–პარ • 11:00–20:00",
+      legal: "წესები და პირობები",
+      terms: "მომსახურების პირობები",
+      privacy: "კონფიდენციალურობის პოლიტიკა",
+      refund: "დაბრუნების პოლიტიკა",
+      note: "© 2026 Copy Paste • ყველა უფლება დაცულია",
+      extra: "გადახდა და მიწოდება ეტაპობრივად დაემატება",
+
+      // mobile labels
+      mobileTitle: "სწრაფი კონტაქტი",
+      mobileGift: "საჩუქრები / ბეჭდვა",
+      mobileHours: "სამუშაო საათები",
+      mobilePhone: "დარეკვა / WhatsApp",
     },
     en: {
-      note: "© Copy Paste • Printing & Posters",
+      about: "Copy Paste — poster printing, photo processing, and custom wall decor.",
+      menu: "Menu",
       posters: "Posters",
-      builder: "Upload & Frame",
+      builder: "Upload Photo",
       contact: "Contact",
+      info: "Info",
       addressTitle: "Address",
       addressValue: "26 Chavchavadze Ave, Tbilisi",
       hoursTitle: "Working hours",
       hoursValue: "Mon–Fri • 11:00–20:00",
+      legal: "Legal",
+      terms: "Terms & Conditions",
+      privacy: "Privacy Policy",
+      refund: "Refund Policy",
+      note: "© 2026 Copy Paste • All rights reserved",
+      extra: "Payments and delivery options will be added soon",
+
+      // mobile labels
+      mobileTitle: "Quick contact",
+      mobileGift: "Gifts / Printing",
+      mobileHours: "Working hours",
+      mobilePhone: "Call / WhatsApp",
     },
   }[lang];
 
   return (
-    <footer className="border-t border-slate-200 bg-white">
-      <div className="mx-auto max-w-6xl px-4 py-10">
-        <div className="grid gap-8 md:grid-cols-3">
-          {/* Brand */}
-          <div>
-            <div className="flex items-center gap-2">
-              <div className="h-9 w-9 rounded-xl border border-slate-200 bg-white shadow-sm" />
-            </div>
-
-            <p className="mt-3 text-sm text-slate-600">
-              {lang === "ka"
-                ? "პოსტერები, ბეჭდვა და კადრების ლამაზი გაფორმება."
-                : "Posters, printing, and beautiful framing."}
-            </p>
-
-            <p className="mt-4 text-xs text-slate-500">{t.note}</p>
+    <footer className="site-footer">
+      <div className="footer-container">
+        {/* ✅ DESKTOP GRID (შენი ძველი) */}
+        <div className="footer-grid">
+          <div className="footer-brand">
+            <div className="brand-logo" />
+            <p>{t.about}</p>
           </div>
 
-          {/* Links */}
-          <div>
-            <div className="text-sm font-semibold">
-              {lang === "ka" ? "მენიუ" : "Menu"}
+          <nav className="footer-nav">
+            <h4>{t.menu}</h4>
+            <Link to={`${base}/posters`}>{t.posters}</Link>
+            <Link to={`${base}/builder`}>{t.builder}</Link>
+            <Link to={`${base}/contact`}>{t.contact}</Link>
+          </nav>
+
+          <div className="footer-info">
+            <h4>{t.info}</h4>
+            <div className="info-block">
+              <span>{t.addressTitle}</span>
+              <p>{t.addressValue}</p>
             </div>
-            <div className="mt-3 flex flex-col gap-2 text-sm">
-              <Link className="text-slate-700 hover:text-slate-500" to={`${base}/posters`}>
-                {t.posters}
-              </Link>
-              <Link className="text-slate-700 hover:text-slate-500" to={`${base}/builder`}>
-                {t.builder}
-              </Link>
-              <Link className="text-slate-700 hover:text-slate-500" to={`${base}/contact`}>
-                {t.contact}
-              </Link>
+            <div className="info-block">
+              <span>{t.hoursTitle}</span>
+              <p>{t.hoursValue}</p>
             </div>
           </div>
 
-          {/* Info */}
-          <div>
-            <div className="text-sm font-semibold">
-              {lang === "ka" ? "ინფო" : "Info"}
-            </div>
-
-            <div className="mt-3 space-y-3 text-sm text-slate-700">
-              <div>
-                <div className="text-xs text-slate-500">{t.addressTitle}</div>
-                <div>{t.addressValue}</div>
-              </div>
-              <div>
-                <div className="text-xs text-slate-500">{t.hoursTitle}</div>
-                <div>{t.hoursValue}</div>
-              </div>
-
-              {/* სურვილისამებრ: ტელეფონი/მეილი */}
-              {/* <div>
-                <div className="text-xs text-slate-500">{lang === "ka" ? "ტელეფონი" : "Phone"}</div>
-                <div>+995 XXX XXX XXX</div>
-              </div> */}
-            </div>
+          <div className="footer-legal">
+            <h4>{t.legal}</h4>
+            <Link to={`${base}/terms`}>{t.terms}</Link>
+            <Link to={`${base}/privacy`}>{t.privacy}</Link>
+            <Link to={`${base}/refund`}>{t.refund}</Link>
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col items-start justify-between gap-3 border-t border-slate-200 pt-6 text-xs text-slate-500 md:flex-row md:items-center">
-          <div>
-            {lang === "ka"
-              ? "გადახდა და მიწოდება მოგვიანებით დაემატება."
-              : "Payments and delivery options will be added later."}
+        {/* ✅ MOBILE FOOTER (სქრინივით) */}
+        <div className="footer-mobile">
+          <div className="footer-mobile-brand">
+            <div className="brand-logo" />
+            <p>{t.about}</p>
           </div>
 
-          <div className="flex gap-4">
-            <Link className="hover:text-slate-400" to={base}>
-              {lang === "ka" ? "მთავარი" : "Home"}
-            </Link>
-            <Link className="hover:text-slate-400" to="/cart">
-              {lang === "ka" ? "კალათა" : "Cart"}
-            </Link>
+          <div className="footer-mobile-actions">
+            <div className="footer-mobile-row">
+              <span className="footer-ic">🎁</span>
+              <div>
+                <div className="footer-mobile-k">{t.mobileGift}</div>
+                <div className="footer-mobile-v">
+                  <Link to={`${base}/products`}>Products</Link>
+                </div>
+              </div>
+            </div>
+
+            <div className="footer-mobile-row">
+              <span className="footer-ic">🕒</span>
+              <div>
+                <div className="footer-mobile-k">{t.mobileHours}</div>
+                <div className="footer-mobile-v">{t.hoursValue}</div>
+              </div>
+            </div>
+
+            <div className="footer-mobile-row">
+              <span className="footer-ic">📞</span>
+              <div>
+                <div className="footer-mobile-k">{t.mobilePhone}</div>
+                <div className="footer-mobile-v">
+                  <a href="tel:+995555966815">+995 555 96 68 15</a>
+                </div>
+              </div>
+            </div>
           </div>
+
+          <div className="footer-mobile-links">
+            <Link to={`${base}/terms`}>{t.terms}</Link>
+            <Link to={`${base}/privacy`}>{t.privacy}</Link>
+          </div>
+        </div>
+
+        <div className="footer-bottom">
+          <span>{t.note}</span>
+          <span>{t.extra}</span>
         </div>
       </div>
     </footer>

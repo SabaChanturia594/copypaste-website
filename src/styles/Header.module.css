@@ -1,18 +1,23 @@
+/* ================= HEADER ================= */
+
 .header {
-  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 11000; /* 999 → 11000 */
+
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #e5e7eb;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  flex-wrap: wrap;
-  border-bottom: 1px solid #333;
-  position: sticky;
-  top: 0;
-  z-index: 999;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(10px);
+
+  color: #343538;
 }
 
+/* ================= LOGO ================= */
 
 .logoContainer {
   display: flex;
@@ -21,90 +26,361 @@
 }
 
 .logo {
- height: auto;
- width: 80px;
+  width: 80px;
+  height: auto;
 }
 
-.brand {
-  font-size: 1.25rem;
-  font-weight: bold;
-  color: #499BFC;
-}
+/* ================= NAV ================= */
 
 .nav {
   display: flex;
   align-items: center;
-  gap: 2rem;
-  flex-wrap: wrap;
+  gap: 16px;
+  position: relative;
 }
 
 .links {
   display: flex;
-  gap: 1.25rem;
+  align-items: center;
+  gap: 1.5rem;
 }
 
+/* Right side actions always visible */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Links */
 .links a {
-  color: #499BFC;
+  color: #343538;
   text-decoration: none;
   font-weight: 500;
-  transition: color 0.3s ease;
   font-size: 20px;
+  position: relative;
+  transition: color 0.25s ease;
 }
 
 .links a:hover {
   color: #c70ea8;
 }
 
-.actions {
-  display: flex;
-  gap: 0.75rem;
+.links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 0;
+  height: 2px;
+  background: #c70ea8;
+  transition: width 0.25s ease;
 }
 
-.actions a button {
-  background-color: #680e9b;
-  padding: 0.5rem 1.1rem;
-  font-size: 0.95rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.links a:hover::after {
+  width: 100%;
+}
+
+/* ================= PRODUCTS DROPDOWN ================= */
+
+.productsWrap {
+  position: relative;
+}
+
+.productsBtn {
+  background: none;
+  border: none;
+  font: inherit;
+  font-size: 20px;
   font-weight: 500;
+  cursor: pointer;
+  color: #343538;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  transition: color 0.25s ease;
+  padding: 0;
 }
 
-.actions a button:hover {
-  background-color: #8c38c0;
+.productsBtn:hover {
+  color: #c70ea8;
 }
+
+.productsMenu {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 0;
+  min-width: 240px;
+
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+
+  padding: 10px;
+  z-index: 9999;
+
+  animation: dropdown 0.18s ease-out;
+}
+
+.productsMenu a {
+  display: block;
+  padding: 12px 14px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #0f172a;
+  font-size: 16px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.productsMenu a:hover {
+  background: #f9e6f6;
+  color: #c70ea8;
+}
+
+/* ================= LANGUAGE ================= */
+
+.langWrap {
+  position: relative;
+}
+
+.langBtn {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 6px 12px;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  font-size: 14px;
+  font-weight: 600;
+  color: #343538;
+
+  transition: all 0.25s ease;
+}
+
+.langBtn:hover {
+  border-color: #c70ea8;
+  color: #c70ea8;
+  background: #fdf2f8;
+}
+
+.langBtn span {
+  font-size: 12px;
+  transition: transform 0.25s ease;
+}
+
+.langBtnOpen span {
+  transform: rotate(180deg);
+}
+
+.langMenu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+
+  padding: 8px;
+  min-width: 160px;
+  z-index: 9999;
+
+  animation: dropdown 0.18s ease-out;
+}
+
+.langItem {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  font-size: 15px;
+  color: #0f172a;
+  transition: background 0.2s ease;
+}
+
+.langItem:hover {
+  background: #f1f5f9;
+}
+
+/* ================= NOTIFICATION ================= */
+
+.nav img {
+  width: 28px;
+  height: auto;
+  cursor: pointer;
+}
+
+/* ================= BURGER ================= */
+
+.burger {
+  display: none;
+  width: 34px;
+  height: 34px;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+
+  z-index: 11100; /* 10001 → 11100 */
+  padding: 0;
+}
+
+.burger span {
+  width: 100%;
+  height: 3px;
+  background: #343538;
+  border-radius: 3px;
+  transition: transform 0.3s ease, opacity 0.2s ease;
+}
+
+/* X animation */
+.burger.active span:nth-child(1) {
+  transform: translateY(9px) rotate(45deg);
+}
+.burger.active span:nth-child(2) {
+  opacity: 0;
+}
+.burger.active span:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
+}
+
+/* ================= OVERLAY ================= */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  z-index: 10800; /* 9999 → 10800 */
+  animation: fadeIn 0.25s ease;
+}
+
+.cart {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  text-decoration: none;
+  border: 1px solid #e2e8f0;
+  background: white;
+  font-size: 20px;
+}
+
+.badge {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 950;
+  color: white;
+  background: #ff9100;
+  border: 2px solid white;
+}
+
+/* ================= ANIMATIONS ================= */
+
+@keyframes dropdown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ================= MOBILE ================= */
 
 @media (max-width: 768px) {
   .header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
+    padding: 1rem 1rem;
   }
 
-  .nav {
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
-    gap: 1rem;
+  .burger {
+    display: flex;
   }
 
-  .links,
-  .actions {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 1rem;
+  /* Hide notification on very small screens (optional) */
+  .nav img {
+    display: none;
   }
-}
-/* 
-input{
-  width: 300px;
-  height: 50px;
-  background-color: #111315;
-  color: white;
-  border-color:#8c38c0;
-} */
-.nav img{
-  width: 30px;
-  height: auto;
-  cursor: pointer;
+
+  /* Slide menu */
+    .links {
+    position: fixed;
+    top: 0;
+    right: 0;
+
+    height: 100vh;
+    width: 85%;
+    max-width: 320px;
+
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(12px);
+
+    padding: 5rem 1.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.4rem;
+
+    transform: translateX(100%);
+    transition: transform 0.35s ease;
+
+    z-index: 10900; /* 10000 → 10900 */
+  }
+
+  .open {
+    transform: translateX(0);
+  }
+
+  .links a,
+  .productsBtn {
+    font-size: 18px;
+  }
+
+  /* Dropdowns become inline */
+  .productsMenu {
+    position: static;
+    border: none;
+    box-shadow: none;
+    padding-left: 1rem;
+    padding-top: 0;
+  }
+
+  .langMenu {
+    position: absolute; /* language stays in header */
+  }
 }

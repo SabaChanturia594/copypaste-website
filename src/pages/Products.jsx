@@ -1,94 +1,168 @@
-import ProductGrid from '../components/ProductGrid';
-import styles from '../styles/Products.module.css';
-import { useLocation } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import styles from "../styles/Products.module.css";
 
-import p1 from '../assets/images/p1.png';
-import p2 from '../assets/images/p2.png';
-import p3 from '../assets/images/p3.png';
+import { CATEGORIES, DATA } from "../data/productsData";
+import { useCart } from "../context/CartContext";
 
-/**
- * ❗ არ შეცვლილა:
- * - allProducts სახელი
- * - ProductGrid
- * - styles.products
- *
- * ✅ გამზადებულია:
- * - ყველა ქარდი განსხვავებულია
- * - ორენოვანი
- * - ფოტოები ბრუნავს (p1,p2,p3...)
- */
-
-const IMAGES = [p1, p2, p3];
-
-function imageByIndex(idx) {
-  return IMAGES[idx % IMAGES.length];
+function getLang(pathname) {
+  const seg = pathname.split("/").filter(Boolean)[0];
+  return seg === "en" ? "en" : "ka";
 }
-
-const TITLES = [
-  { ka: 'აბსტრაქტული ტალღები', en: 'Abstract Waves' },
-  { ka: 'თბილისი ღამით', en: 'Tbilisi at Night' },
-  { ka: 'მინიმალური ხაზები', en: 'Minimal Lines' },
-  { ka: 'საბავშვო Safari', en: 'Kids Safari' },
-  { ka: 'ქალაქის სტილი', en: 'City Style' },
-  { ka: 'ფერადი ფორმები', en: 'Color Shapes' },
-  { ka: 'გეომეტრია', en: 'Geometry' },
-  { ka: 'მთები და ბუნება', en: 'Mountains & Nature' },
-  { ka: 'Vintage პლაკატი', en: 'Vintage Poster' },
-  { ka: 'ტიპოგრაფია', en: 'Typography' },
-  { ka: 'მხიარული ფერები', en: 'Happy Colors' },
-  { ka: 'შავი-თეთრი მინიმალი', en: 'Black & White Minimal' },
-];
-
-const PRICES = ['15 ₾', '20 ₾', '25 ₾', '30 ₾', '35 ₾'];
-
-function viewsByIndex(idx) {
-  return 90 + idx * 11 + (idx % 3) * 9;
-}
-
-// ❗ allProducts — სახელი უცვლელია
-const allProducts = Array(12)
-  .fill()
-  .map((_, idx) => ({
-    id: String(idx + 1),
-    title: 'Poster', // რეალურად ქვემოთ ენის მიხედვით იცვლება
-    description: '',
-    price: PRICES[idx % PRICES.length],
-    views: viewsByIndex(idx),
-    image: imageByIndex(idx), // ✅ აქ იცვლება ფოტოები
-    metaTitle: TITLES[idx % TITLES.length], // ✅ აქაც safe არის
-  }));
 
 export default function Products() {
-  const { pathname } = useLocation();
-  const lang = pathname.startsWith('/en') ? 'en' : 'ka';
+  const { pathname, search } = useLocation();
+  const navigate = useNavigate();
+
+  const lang = getLang(pathname);
+  const base = `/${lang}`;
+
+  const { addToCart } = useCart();
+  const [addedId, setAddedId] = useState(null);
 
   const t = {
     ka: {
-      title: 'ჩვენი დიზაინის პოსტერები',
-      desc: 'აირჩიე კატალოგიდან და შეუკვეთე სასურველი ზომით.',
-      cardDesc: 'მზად დიზაინი • A4 / A3 / A3+',
+      title: "პროდუქცია",
+      subtitle:
+        "თქვენი დიზაინის შესაკვეთად დაგვიკავშირდით მეილზე ან WhatsApp",
+      cta: "კონტაქტი",
+      details: "დეტალურად",
+      add: "კალათაში",
+      added: "დაემატა ✓",
     },
     en: {
-      title: 'Our Poster Designs',
-      desc: 'Browse our catalog and order in your preferred size.',
-      cardDesc: 'Ready designs • A4 / A3 / A3+',
+      title: "Products",
+      subtitle:
+        "To order your design, contact us via email or WhatsApp.",
+      cta: "Contact",
+      details: "View details",
+      add: "Add to cart",
+      added: "Added ✓",
     },
   }[lang];
 
-  const localizedProducts = allProducts.map((p, idx) => ({
-    ...p,
-    title:
-      lang === 'ka'
-        ? `${p.metaTitle.ka} #${idx + 1}`
-        : `${p.metaTitle.en} #${idx + 1}`,
-    description: t.cardDesc,
-  }));
+  const label = (c) => (lang === "en" ? c.en : c.ka);
+
+  const scrollToKey = (key) => {
+    document.getElementById(key)?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
+  // Supports /products?cat=posters
+  useEffect(() => {
+    const params = new URLSearchParams(search);
+    const cat = params.get("cat");
+    if (!cat) return;
+
+    const normalized = cat === "business" ? "businessCards" : String(cat).trim();
+    if (document.getElementById(normalized)) {
+      requestAnimationFrame(() => scrollToKey(normalized));
+    }
+  }, [search]);
+
+  const onAdd = (routeId, p) => {
+    addToCart({
+      routeId,
+      title: p.title,
+      price: p.price,
+      img: p.img,
+    });
+
+    setAddedId(routeId);
+    window.setTimeout(() => setAddedId(null), 1100);
+  };
 
   return (
-    <div className={`${styles.products} mt-5`}>
-      <h1>{t.title}</h1>
-      <p style={{ marginTop: '8px', color: '#475569' }}>{t.desc}</p>
-      <ProductGrid products={localizedProducts} />
-    </div>
+    <main className={styles.page}>
+      {/* TOP */}
+      <header className={styles.top}>
+        <div className={styles.topInner}>
+          <div>
+            <h1 className={styles.title}>{t.title}</h1>
+            <p className={styles.subtitle}>{t.subtitle}</p>
+          </div>
+
+          <button
+            type="button"
+            className={styles.topCta}
+            onClick={() => navigate(`${base}/contact`)}
+          >
+            {t.cta}
+          </button>
+        </div>
+      </header>
+
+      {/* CHIPS */}
+      <nav className={styles.chipsWrap} aria-label="Categories">
+        {CATEGORIES.map((c) => (
+          <button
+            key={c.key}
+            type="button"
+            className={styles.chip}
+            onClick={() => scrollToKey(c.key)}
+          >
+            {label(c)}
+          </button>
+        ))}
+      </nav>
+
+      {/* SECTIONS */}
+      <div className={styles.sections}>
+        {CATEGORIES.map((c) => {
+          const items = DATA[c.key] || [];
+
+          return (
+            <section key={c.key} id={c.key} className={styles.section}>
+              <div className={styles.sectionHead}>
+                <h2 className={styles.sectionTitle}>{label(c)}</h2>
+              </div>
+
+              <div className={styles.grid}>
+                {items.map((p) => {
+                  const routeId = `${c.key}-${p.id}`;
+
+                  return (
+                    <article key={routeId} className={styles.card}>
+                      <div className={styles.imgWrap}>
+                        <img
+                          className={styles.img}
+                          src={p.img}
+                          alt={p.title}
+                          loading="lazy"
+                        />
+                      </div>
+
+                      <div className={styles.body}>
+                        <h3 className={styles.cardTitle}>{p.title}</h3>
+                        <div className={styles.price}>{p.price}</div>
+
+                        <div className={styles.actions}>
+                          <Link
+                            className={styles.detailsBtn}
+                            to={`${base}/product/${routeId}`}
+                          >
+                            {t.details}
+                          </Link>
+
+                          <button
+                            type="button"
+                            className={styles.addBtn}
+                            onClick={() => onAdd(routeId, p)}
+                          >
+                            {addedId === routeId ? t.added : t.add}
+                          </button>
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            </section>
+          );
+        })}
+      </div>
+    </main>
   );
 }

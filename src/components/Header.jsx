@@ -1,8 +1,8 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import styles from '../styles/Header.module.css';
 import logo from '../assets/images/logo.png';
-import notification from '../assets/images/notification.png';
+import { useCart } from "../context/CartContext";
 
 function getLang(pathname) {
   const seg = pathname.split('/').filter(Boolean)[0];
@@ -10,28 +10,85 @@ function getLang(pathname) {
 }
 
 export default function Header() {
-  const scrollTop = () => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-  };
-
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const lang = getLang(pathname);
   const base = `/${lang}`;
+  const { count } = useCart();
+
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [prodOpen, setProdOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
+
+  const prodRef = useRef(null);
+  const langRef = useRef(null);
 
   const t = {
-    ka: { home: 'მთავარი', products: 'პოსტერები', contact: 'კონტაქტი' },
-    en: { home: 'Home', products: 'Posters', contact: 'Contact' },
+    ka: {
+      home: 'მთავარი',
+      products: 'პროდუქტები',
+      items: {
+        posters: 'პოსტერები',
+        caricatures: 'კარიკატურები',
+        tshirts: 'მაისურები',
+        shirts: 'პერანგები',
+        bags: 'ჩანთები',
+        calendars: 'კალენდრები',
+        mugs: 'ჭიქები',
+        shirts: 'პერანგები',
+        bags: 'ჩანთები',
+      },
+      contact: 'კონტაქტი',
+    },
+    en: {
+      home: 'Home',
+      products: 'Products',
+      items: {
+        posters: 'Posters',
+        caricatures: 'Caricatures',
+        tshirts: 'T-Shirts',
+        shirts: 'Shirts',
+        bags: 'Bags',
+        calendars: 'Calendars',
+        mugs: 'Mugs',
+        shirts: 'Shirts',
+        bags: 'Bags',
+      },
+      contact: 'Contact',
+    },
   }[lang];
 
-  // ✅ dropdown state
-  const [open, setOpen] = useState(false);
-  const ddRef = useRef(null);
+  const scrollTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setMenuOpen(false);
+    setProdOpen(false);
+    setLangOpen(false);
+  };
 
-  // ✅ close on outside click
+  const switchLang = (lng) => {
+    if (lng === lang) return;
+    navigate(pathname.replace(`/${lang}`, `/${lng}`));
+    setLangOpen(false);
+    setMenuOpen(false);
+    setProdOpen(false);
+  };
+
+  const closeAllMenus = () => {
+    setMenuOpen(false);
+    setProdOpen(false);
+    setLangOpen(false);
+  };
+
+  const onProductClick = () => {
+    setMenuOpen(false);
+    setProdOpen(false);
+  };
+
+  // ✅ close dropdowns on outside click
   useEffect(() => {
     const onDown = (e) => {
-      if (!ddRef.current) return;
-      if (!ddRef.current.contains(e.target)) setOpen(false);
+      if (prodRef.current && !prodRef.current.contains(e.target)) setProdOpen(false);
+      if (langRef.current && !langRef.current.contains(e.target)) setLangOpen(false);
     };
     document.addEventListener('mousedown', onDown);
     return () => document.removeEventListener('mousedown', onDown);
@@ -40,109 +97,133 @@ export default function Header() {
   // ✅ close on ESC
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === 'Escape') setOpen(false);
+      if (e.key === 'Escape') {
+        closeAllMenus();
+      }
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, []);
 
+  // ✅ body scroll lock when menu is open (mobile)
+  useEffect(() => {
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+    if (!menuOpen || !isMobile) {
+      document.body.style.overflow = "";
+      return;
+    }
+
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [menuOpen]);
+
   return (
     <header className={styles.header}>
-      <Link to={base} onClick={scrollTop}>
-        <div className={styles.logoContainer}>
-          <img src={logo} alt="Copy Paste Logo" className={styles.logo} />
-          {/* ❌ ბრენდის ტექსტი ამოვიღე */}
-        </div>
+      <Link to={base} onClick={scrollTop} className={styles.logoContainer}>
+        <img src={logo} alt="Copy Paste Logo" className={styles.logo} />
       </Link>
 
       <nav className={styles.nav}>
-        <div className={styles.links}>
+        {/* LEFT/MAIN LINKS (desktop inline, mobile slide menu) */}
+        <div className={`${styles.links} ${menuOpen ? styles.open : ''}`}>
           <Link to={base} onClick={scrollTop}>{t.home}</Link>
-          <Link to={`${base}/products`}>{t.products}</Link>
-          <Link to={`${base}/contact`}>{t.contact}</Link>
 
-          {/* ✅ Original language switch (dropdown) */}
-          <div ref={ddRef} style={{ position: 'relative', display: 'inline-block' }}>
-           <button
+          {/* Products dropdown */}
+          <div ref={prodRef} className={styles.productsWrap}>
+            <button
               type="button"
-              onClick={() => setOpen((v) => !v)}
-              style={{
-                background: 'transparent',
-                border: '1px solid #e2e8f0',
-                borderRadius: '10px',
-                padding: '6px 10px',
-                cursor: 'pointer',
-                font: 'inherit',
-                color: 'inherit',
-                display: 'inline-flex',
-                color:'black',
-                alignItems: 'center',
-                gap: '6px',
-              }}
-              aria-haspopup="menu"
-              aria-expanded={open}
-              title="Language"
+              className={styles.productsBtn}
+              onClick={() => setProdOpen(v => !v)}
             >
-              {lang === 'ka' ? 'KA' : 'EN'} <span aria-hidden>▾</span>
-          </button>
+              {t.products} <span>▾</span>
+            </button>
 
-
-            {open && (
-              <div
-                role="menu"
-                style={{
-                  position: 'absolute',
-                  right: 0,
-                  top: 'calc(100% + 8px)',
-                  minWidth: '150px',
-                  background: '#fff',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '12px',
-                  boxShadow: '0 12px 30px rgba(15, 23, 42, 0.10)',
-                  padding: '8px',
-                  zIndex: 9999,
-                }}
-              >
-                <Link
-                  to="/ka"
-                  role="menuitem"
-                  onClick={() => setOpen(false)}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '10px',
-                    borderRadius: '10px',
-                    textDecoration: 'none',
-                    color: '#0f172a',
-                  }}
-                >
-                  ქართული <span style={{ opacity: lang === 'ka' ? 1 : 0.2 }}>✓</span>
+            {prodOpen && (
+              <div className={styles.productsMenu}>
+                <Link to={`${base}/products?cat=posters`} onClick={onProductClick}>
+                  {t.items.posters}
                 </Link>
 
-                <Link
-                  to="/en"
-                  role="menuitem"
-                  onClick={() => setOpen(false)}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '10px',
-                    borderRadius: '10px',
-                    textDecoration: 'none',
-                    color: '#0f172a',
-                    marginTop: '4px',
-                  }}
-                >
-                  English <span style={{ opacity: lang === 'en' ? 1 : 0.2 }}>✓</span>
+                <Link to={`${base}/products?cat=caricatures`} onClick={onProductClick}>
+                  {t.items.caricatures}
+                </Link>
+
+                <Link to={`${base}/products?cat=tshirts`} onClick={onProductClick}>
+                  {t.items.tshirts}
+                </Link>
+
+                <Link to={`${base}/products?cat=shirts`} onClick={onProductClick}>
+                  {t.items.shirts}
+                </Link>
+
+                <Link to={`${base}/products?cat=bags`} onClick={onProductClick}>
+                  {t.items.bags}
+                </Link>
+
+                <Link to={`${base}/products?cat=calendars`} onClick={onProductClick}>
+                  {t.items.calendars}
+                </Link>
+
+                <Link to={`${base}/products?cat=mugs`} onClick={onProductClick}>
+                  {t.items.mugs}
                 </Link>
               </div>
             )}
           </div>
+
+          <Link to={`${base}/contact`} onClick={closeAllMenus}>{t.contact}</Link>
+
+          <Link to={`${base}/cart`} className={styles.cart} onClick={closeAllMenus}>
+            🛒
+            {count > 0 && <span className={styles.badge}>{count}</span>}
+          </Link>
         </div>
 
-        <img src={notification} alt="notification" />
+        {/* RIGHT ACTIONS (always visible) */}
+        <div className={styles.actions}>
+          {/* Language always visible */}
+          <div ref={langRef} className={styles.langWrap}>
+            <button
+              type="button"
+              className={`${styles.langBtn} ${langOpen ? styles.langBtnOpen : ''}`}
+              onClick={() => setLangOpen(v => !v)}
+            >
+              {lang.toUpperCase()} <span>▾</span>
+            </button>
+
+            {langOpen && (
+              <div className={styles.langMenu}>
+                <button className={styles.langItem} onClick={() => switchLang('ka')}>
+                  ქართული <span>{lang === 'ka' && '✓'}</span>
+                </button>
+                <button className={styles.langItem} onClick={() => switchLang('en')}>
+                  English <span>{lang === 'en' && '✓'}</span>
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* burger (3 lines) */}
+          <button
+            className={`${styles.burger} ${menuOpen ? styles.active : ''}`}
+            onClick={() => setMenuOpen(v => !v)}
+            aria-label="Menu"
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+        </div>
+
+        {/* overlay for mobile menu */}
+        {menuOpen && (
+          <div className={styles.overlay} onClick={() => setMenuOpen(false)} />
+        )}
       </nav>
     </header>
   );

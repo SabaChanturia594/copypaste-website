@@ -1,12 +1,202 @@
-.contact {
-  padding: 2rem;
-  color: #e0e0e0;
+/* ===== Base ===== */
+.page {
+  min-height: 100vh;
+  border-radius: 5%;
+  color: hsl(0, 0%, 0%);
+  padding-bottom: 80px;
+  animation: fadeIn 0.6s ease both;
 }
 
-.contact h1 {
-  margin-bottom: 1rem;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.contact p {
-  color: #ccc;
+/* ===== Hero ===== */
+.hero {
+  padding: 72px 20px 56px;
+  background:
+    radial-gradient(800px 300px at 10% -20%, rgba(255,255,255,0.06), transparent),
+    radial-gradient(600px 200px at 90% 0%, rgba(255,255,255,0.04), transparent);
+}
+
+.heroInner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  margin-top: 10px;
+  font-size: 16px;
+  max-width: 520px;
+}
+
+/* Pills */
+.quickRow {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  padding: 6px 14px;
+  font-size: 13px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(6px);
+}
+
+/* CTA */
+.primaryCta {
+  padding: 14px 26px;
+  border-radius: 999px;
+  color: #000;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.primaryCta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgb(255, 255, 255);
+}
+
+/* ===== Grid ===== */
+.grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+/* ===== Cards ===== */
+.card {
+  background: rgb(248, 248, 248);
+  border-radius: 22px;
+  padding: 22px;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform .35s ease,
+    box-shadow .35s ease,
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.08),
+    transparent
+  );
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  background: rgba(95, 95, 95, 0.137);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+}
+
+.card:hover::after {
+  opacity: 1;
+}
+
+.cardAccent {
+  color: #000;
+}
+
+.cardAccent .cardHint {
+  color: #444;
+}
+
+/* Card header */
+.cardTop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cardTitle {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+/* Values */
+.cardValue {
+  margin-top: 16px;
+  font-size: 18px;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.cardHint {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #9a9aa5;
+}
+
+/* Icons */
+.icon {
+  width: 26px;
+  height: 26px;
+  opacity: 0.85;
+}
+
+/* ===== Wide card (Map) ===== */
+.cardWide {
+  grid-column: span 2;
+}
+
+.mapWrap {
+  margin-top: 16px;
+  border-radius: 16px;
+  overflow: hidden;
+  height: 220px;
+}
+
+.mapWrap iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .hero {
+    padding-top: 56px;
+  }
+
+  .cardWide {
+    grid-column: span 1;
+  }
+
+  .mapWrap {
+    height: 180px;
+  }
 }
