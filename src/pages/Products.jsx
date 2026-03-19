@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import styles from "../styles/Products.module.css";
 
 import { CATEGORIES, DATA } from "../data/productsData";
-import { useCart } from "../context/CartContext";
 
 function getLang(pathname) {
   const seg = pathname.split("/").filter(Boolean)[0];

@@ -1,5 +1,11 @@
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import styles from "../styles/Footer.module.css";
+
+import logo from "../assets/images/logo.png";
+import facebook from "../assets/images/Facebook.png";
+import instagram from "../assets/images/instagram.jpg";
+import whatsapp from "../assets/images/whatsapp.png";
+import tiktok from "../assets/images/tiktok.png";
 
 function getLang(pathname) {
   const seg = pathname.split("/").filter(Boolean)[0];
@@ -9,143 +15,96 @@ function getLang(pathname) {
 export default function Footer() {
   const { pathname } = useLocation();
   const lang = getLang(pathname);
-  const base = `/${lang}`;
 
   const t = {
     ka: {
-      about:
-        "Copy Paste — პოსტერების ბეჭდვა, ფოტოების დამუშავება და კედლის დეკორი ინდივიდუალური დიზაინით.",
-      menu: "მენიუ",
-      posters: "პოსტერები",
-      builder: "ატვირთე ფოტო",
-      contact: "კონტაქტი",
-      info: "ინფო",
-      addressTitle: "მისამართი",
+      contacts: "საკონტაქტოები",
+      socials: "სოციალური ქსელები",
+      phone: "ტელეფონი",
+      email: "ელ-ფოსტა",
+      address: "მისამართი",
       addressValue: "ჭავჭავაძის 26, თბილისი",
-      hoursTitle: "სამუშაო საათები",
-      hoursValue: "ორშ–პარ • 11:00–20:00",
-      legal: "წესები და პირობები",
-      terms: "მომსახურების პირობები",
-      privacy: "კონფიდენციალურობის პოლიტიკა",
-      refund: "დაბრუნების პოლიტიკა",
-      note: "© 2026 Copy Paste • ყველა უფლება დაცულია",
-      extra: "გადახდა და მიწოდება ეტაპობრივად დაემატება",
-
-      // mobile labels
-      mobileTitle: "სწრაფი კონტაქტი",
-      mobileGift: "საჩუქრები / ბეჭდვა",
-      mobileHours: "სამუშაო საათები",
-      mobilePhone: "დარეკვა / WhatsApp",
+      rights: "© 2026 Copy Paste • ყველა უფლება დაცულია",
     },
     en: {
-      about: "Copy Paste — poster printing, photo processing, and custom wall decor.",
-      menu: "Menu",
-      posters: "Posters",
-      builder: "Upload Photo",
-      contact: "Contact",
-      info: "Info",
-      addressTitle: "Address",
+      contacts: "Contacts",
+      socials: "Social media",
+      phone: "Phone",
+      email: "Email",
+      address: "Address",
       addressValue: "26 Chavchavadze Ave, Tbilisi",
-      hoursTitle: "Working hours",
-      hoursValue: "Mon–Fri • 11:00–20:00",
-      legal: "Legal",
-      terms: "Terms & Conditions",
-      privacy: "Privacy Policy",
-      refund: "Refund Policy",
-      note: "© 2026 Copy Paste • All rights reserved",
-      extra: "Payments and delivery options will be added soon",
-
-      // mobile labels
-      mobileTitle: "Quick contact",
-      mobileGift: "Gifts / Printing",
-      mobileHours: "Working hours",
-      mobilePhone: "Call / WhatsApp",
+      rights: "© 2026 Copy Paste • All rights reserved",
     },
   }[lang];
 
   return (
-    <footer className="site-footer">
-      <div className="footer-container">
-        {/* ✅ DESKTOP GRID (შენი ძველი) */}
-        <div className="footer-grid">
-          <div className="footer-brand">
-            <div className="brand-logo" />
-            <p>{t.about}</p>
+    <footer className={styles.footer}>
+      <div className={styles.container}>
+        <div className={styles.grid}>
+          <div className={styles.brand}>
+            <img src={logo} alt="Copy Paste Logo" className={styles.logo} />
           </div>
 
-          <nav className="footer-nav">
-            <h4>{t.menu}</h4>
-            <Link to={`${base}/posters`}>{t.posters}</Link>
-            <Link to={`${base}/builder`}>{t.builder}</Link>
-            <Link to={`${base}/contact`}>{t.contact}</Link>
-          </nav>
-
-          <div className="footer-info">
-            <h4>{t.info}</h4>
-            <div className="info-block">
-              <span>{t.addressTitle}</span>
-              <p>{t.addressValue}</p>
-            </div>
-            <div className="info-block">
-              <span>{t.hoursTitle}</span>
-              <p>{t.hoursValue}</p>
-            </div>
+          <div className={styles.block}>
+            <h4>{t.contacts}</h4>
+            <a href="tel:+995555966815">{t.phone}: +995 555 96 68 15</a>
+            <a href="mailto:CopyPasteTbilisi@gmail.com">
+              {t.email}: CopyPasteTbilisi@gmail.com
+            </a>
+            <span>
+              {t.address}: {t.addressValue}
+            </span>
           </div>
 
-          <div className="footer-legal">
-            <h4>{t.legal}</h4>
-            <Link to={`${base}/terms`}>{t.terms}</Link>
-            <Link to={`${base}/privacy`}>{t.privacy}</Link>
-            <Link to={`${base}/refund`}>{t.refund}</Link>
+          <div className={styles.block}>
+            <h4>{t.socials}</h4>
+
+            <div className={styles.socials}>
+              <a
+                href="https://www.facebook.com/profile.php?id=61584105217639"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Facebook"
+                className={styles.social}
+              >
+                <img src={facebook} alt="Facebook" />
+              </a>
+
+              <a
+                href="https://www.instagram.com/"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Instagram"
+                className={styles.social}
+              >
+                <img src={instagram} alt="Instagram" />
+              </a>
+
+              <a
+                href="https://wa.me/995555966815"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="WhatsApp"
+                className={styles.social}
+              >
+                <img src={whatsapp} alt="WhatsApp" />
+              </a>
+
+              <a
+                href="https://www.tiktok.com/@copypastetbilisi26?lang=en"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="TikTok"
+                className={styles.social}
+              >
+                <img src={tiktok} alt="TikTok" />
+              </a>
+            </div>
           </div>
         </div>
 
-        {/* ✅ MOBILE FOOTER (სქრინივით) */}
-        <div className="footer-mobile">
-          <div className="footer-mobile-brand">
-            <div className="brand-logo" />
-            <p>{t.about}</p>
-          </div>
-
-          <div className="footer-mobile-actions">
-            <div className="footer-mobile-row">
-              <span className="footer-ic">🎁</span>
-              <div>
-                <div className="footer-mobile-k">{t.mobileGift}</div>
-                <div className="footer-mobile-v">
-                  <Link to={`${base}/products`}>Products</Link>
-                </div>
-              </div>
-            </div>
-
-            <div className="footer-mobile-row">
-              <span className="footer-ic">🕒</span>
-              <div>
-                <div className="footer-mobile-k">{t.mobileHours}</div>
-                <div className="footer-mobile-v">{t.hoursValue}</div>
-              </div>
-            </div>
-
-            <div className="footer-mobile-row">
-              <span className="footer-ic">📞</span>
-              <div>
-                <div className="footer-mobile-k">{t.mobilePhone}</div>
-                <div className="footer-mobile-v">
-                  <a href="tel:+995555966815">+995 555 96 68 15</a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="footer-mobile-links">
-            <Link to={`${base}/terms`}>{t.terms}</Link>
-            <Link to={`${base}/privacy`}>{t.privacy}</Link>
-          </div>
-        </div>
-
-        <div className="footer-bottom">
-          <span>{t.note}</span>
-          <span>{t.extra}</span>
+        <div className={styles.bottom}>
+          <span>{t.rights}</span>
         </div>
       </div>
     </footer>

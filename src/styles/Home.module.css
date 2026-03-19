@@ -157,7 +157,7 @@
   background: white;
 }
 
-.cartBtn {
+/* .cartBtn {
   border: none;
   cursor: pointer;
   padding: 12px;
@@ -168,7 +168,7 @@
   background: rgb(0, 0, 0);
 
 
-}
+} */
 
 @media (max-width: 520px) {
   .hero {

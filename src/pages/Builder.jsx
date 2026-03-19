@@ -1,7 +1,5 @@
 import { useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { calcPrice } from "../lib/calcPrice";
-
 function getLang(pathname) {
   const seg = pathname.split("/").filter(Boolean)[0];
   return seg === "en" ? "en" : "ka";

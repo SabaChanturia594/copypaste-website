@@ -2,7 +2,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import styles from '../styles/Header.module.css';
 import logo from '../assets/images/logo.png';
-import { useCart } from "../context/CartContext";
 
 function getLang(pathname) {
   const seg = pathname.split('/').filter(Boolean)[0];
@@ -14,7 +13,6 @@ export default function Header() {
   const navigate = useNavigate();
   const lang = getLang(pathname);
   const base = `/${lang}`;
-  const { count } = useCart();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [prodOpen, setProdOpen] = useState(false);
@@ -177,11 +175,6 @@ export default function Header() {
           </div>
 
           <Link to={`${base}/contact`} onClick={closeAllMenus}>{t.contact}</Link>
-
-          <Link to={`${base}/cart`} className={styles.cart} onClick={closeAllMenus}>
-            🛒
-            {count > 0 && <span className={styles.badge}>{count}</span>}
-          </Link>
         </div>
 
         {/* RIGHT ACTIONS (always visible) */}

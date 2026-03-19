@@ -1,7 +1,6 @@
 import { useLocation, Link } from "react-router-dom";
 import styles from "../styles/Home.module.css";
 import { DATA } from "../data/productsData";
-import { useCart } from "../context/CartContext";
 
 function getLang(pathname) {
   const seg = pathname.split("/").filter(Boolean)[0];
@@ -30,7 +29,6 @@ export default function Home() {
   const lang = getLang(pathname);
   const base = `/${lang}`;
 
-  const { addToCart } = useCart();
 
   const t = {
     ka: {
@@ -88,20 +86,7 @@ export default function Home() {
                     {t.details}
                   </Link>
 
-                  <button
-                    className={styles.cartBtn}
-                    type="button"
-                    onClick={() =>
-                      addToCart({
-                        routeId: p.routeId,
-                        title: p.title,
-                        price: p.price,
-                        img: p.img,
-                      })
-                    }
-                  >
-                    {t.add}
-                  </button>
+                 
                 </div>
               </div>
             </article>

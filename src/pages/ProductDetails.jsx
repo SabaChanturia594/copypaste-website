@@ -4,7 +4,6 @@ import { useLocation, useParams, Link } from "react-router-dom";
 import { useState } from "react";
 import { getProductByRouteId, getCategoryLabel } from "../data/productsData";
 import styles from "../styles/ProductDetails.module.css";
-import { useCart } from "../context/CartContext";
 
 function getLang(pathname) {
   const seg = pathname.split("/").filter(Boolean)[0];
@@ -18,8 +17,6 @@ export default function ProductDetails() {
   const lang = getLang(pathname);
   const base = `/${lang}`;
 
-  const { addToCart } = useCart();
-  const [added, setAdded] = useState(false);
 
   const t = {
     ka: {
@@ -32,8 +29,6 @@ export default function ProductDetails() {
       sizes: "ზომები",
       printer: "ბეჭდვა",
       note: "შენიშვნა",
-      add: "კალათაში დამატება",
-      added: "დაემატა ✓",
     },
     en: {
       notFoundTitle: "Not found",
@@ -45,8 +40,6 @@ export default function ProductDetails() {
       sizes: "Sizes",
       printer: "Printer",
       note: "Note",
-      add: "Add to cart",
-      added: "Added ✓",
     },
   }[lang];
 
@@ -58,13 +51,8 @@ export default function ProductDetails() {
       title: product.title,
       price: product.price,
       img: product.img,
-    });
-
-    setAdded(true);
-    window.setTimeout(() => setAdded(false), 1200);
-
-    // თუ გინდა რომ დაუყოვნებლივ კალათაზე გადაიყვანოს, ჩართე:
-    // navigate(`${base}/cart`);
+    })
+ 
   };
 
   if (!product) {
@@ -139,9 +127,6 @@ export default function ProductDetails() {
               </div>
             </div>
 
-            <button className={styles.cartBtn} type="button" onClick={onAdd}>
-              {added ? t.added : t.add}
-            </button>
           </section>
         </div>
       </div>
