@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import styles from "../styles/Products.module.css";
 
@@ -16,18 +16,13 @@ export default function Products() {
   const lang = getLang(pathname);
   const base = `/${lang}`;
 
-  const { addToCart } = useCart();
-  const [addedId, setAddedId] = useState(null);
-
   const t = {
     ka: {
       title: "პროდუქცია",
       subtitle:
-        "თქვენი დიზაინის შესაკვეთად დაგვიკავშირდით მეილზე ან WhatsApp",
+        "თქვენი დიზაინის შესაკვეთად დაგვიკავშირდით მეილზე ან WhatsApp-ზე",
       cta: "კონტაქტი",
       details: "დეტალურად",
-      add: "კალათაში",
-      added: "დაემატა ✓",
     },
     en: {
       title: "Products",
@@ -35,8 +30,6 @@ export default function Products() {
         "To order your design, contact us via email or WhatsApp.",
       cta: "Contact",
       details: "View details",
-      add: "Add to cart",
-      added: "Added ✓",
     },
   }[lang];
 
@@ -49,33 +42,21 @@ export default function Products() {
     });
   };
 
-  // Supports /products?cat=posters
   useEffect(() => {
     const params = new URLSearchParams(search);
     const cat = params.get("cat");
     if (!cat) return;
 
-    const normalized = cat === "business" ? "businessCards" : String(cat).trim();
+    const normalized =
+      cat === "business" ? "businessCards" : String(cat).trim();
+
     if (document.getElementById(normalized)) {
       requestAnimationFrame(() => scrollToKey(normalized));
     }
   }, [search]);
 
-  const onAdd = (routeId, p) => {
-    addToCart({
-      routeId,
-      title: p.title,
-      price: p.price,
-      img: p.img,
-    });
-
-    setAddedId(routeId);
-    window.setTimeout(() => setAddedId(null), 1100);
-  };
-
   return (
     <main className={styles.page}>
-      {/* TOP */}
       <header className={styles.top}>
         <div className={styles.topInner}>
           <div>
@@ -93,7 +74,6 @@ export default function Products() {
         </div>
       </header>
 
-      {/* CHIPS */}
       <nav className={styles.chipsWrap} aria-label="Categories">
         {CATEGORIES.map((c) => (
           <button
@@ -107,7 +87,6 @@ export default function Products() {
         ))}
       </nav>
 
-      {/* SECTIONS */}
       <div className={styles.sections}>
         {CATEGORIES.map((c) => {
           const items = DATA[c.key] || [];
@@ -119,11 +98,11 @@ export default function Products() {
               </div>
 
               <div className={styles.grid}>
-                {items.map((p) => {
-                  const routeId = `${c.key}-${p.id}`;
+                {items.map((p, index) => {
+                  const routeId = `${c.key}-${p.id || index + 1}`;
 
                   return (
-                    <article key={routeId} className={styles.card}>
+                    <article key={`${routeId}-${index}`} className={styles.card}>
                       <div className={styles.imgWrap}>
                         <img
                           className={styles.img}
@@ -144,14 +123,6 @@ export default function Products() {
                           >
                             {t.details}
                           </Link>
-
-                          <button
-                            type="button"
-                            className={styles.addBtn}
-                            onClick={() => onAdd(routeId, p)}
-                          >
-                            {addedId === routeId ? t.added : t.add}
-                          </button>
                         </div>
                       </div>
                     </article>

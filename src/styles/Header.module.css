@@ -272,19 +272,6 @@
   animation: fadeIn 0.25s ease;
 }
 
-.cart {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  text-decoration: none;
-  border: 1px solid #e2e8f0;
-  background: white;
-  font-size: 20px;
-}
 
 .badge {
   position: absolute;

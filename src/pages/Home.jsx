@@ -36,7 +36,6 @@ export default function Home() {
       sub: "პოსტერები • კარიკატურები • მაისურები • კალენდრები და სხვა",
       featured: "პოპულარული",
       details: "დეტალურად",
-      add: "კალათაში",
       products: "პროდუქცია",
     },
     en: {
@@ -44,7 +43,6 @@ export default function Home() {
       sub: "Posters • Caricatures • T-Shirts • Calendars & more",
       featured: "Featured",
       details: "View details",
-      add: "Add to cart",
       products: "Products",
     },
   }[lang];

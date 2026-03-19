@@ -157,18 +157,7 @@
   background: white;
 }
 
-/* .cartBtn {
-  border: none;
-  cursor: pointer;
-  padding: 12px;
-  border-radius: 16px;
-  font-weight: 950;
-  color: rgb(255, 255, 255);
-  border: 1px solid #e2e8f0;
-  background: rgb(0, 0, 0);
 
-
-} */
 
 @media (max-width: 520px) {
   .hero {
