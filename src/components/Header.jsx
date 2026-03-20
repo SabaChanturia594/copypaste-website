@@ -1,11 +1,11 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
-import styles from '../styles/Header.module.css';
-import logo from '../assets/images/logo.png';
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import styles from "../styles/Header.module.css";
+import logo from "../assets/images/logo.png";
 
 function getLang(pathname) {
-  const seg = pathname.split('/').filter(Boolean)[0];
-  return seg === 'en' ? 'en' : 'ka';
+  const seg = pathname.split("/").filter(Boolean)[0];
+  return seg === "en" ? "en" : "ka";
 }
 
 export default function Header() {
@@ -23,41 +23,39 @@ export default function Header() {
 
   const t = {
     ka: {
-      home: 'მთავარი',
-      products: 'პროდუქტები',
+      home: "მთავარი",
+      products: "პროდუქტები",
+      builder: "დიზაინის მორგება",
+      contact: "კონტაქტი",
       items: {
-        posters: 'პოსტერები',
-        caricatures: 'კარიკატურები',
-        tshirts: 'მაისურები',
-        shirts: 'პერანგები',
-        bags: 'ჩანთები',
-        calendars: 'კალენდრები',
-        mugs: 'ჭიქები',
-        shirts: 'პერანგები',
-        bags: 'ჩანთები',
+        posters: "პოსტერები",
+        caricatures: "კარიკატურები",
+        tshirts: "მაისურები",
+        shirts: "პერანგები",
+        bags: "ჩანთები",
+        calendars: "კალენდრები",
+        mugs: "ჭიქები",
       },
-      contact: 'კონტაქტი',
     },
     en: {
-      home: 'Home',
-      products: 'Products',
+      home: "Home",
+      products: "Products",
+      builder: "Builder",
+      contact: "Contact",
       items: {
-        posters: 'Posters',
-        caricatures: 'Caricatures',
-        tshirts: 'T-Shirts',
-        shirts: 'Shirts',
-        bags: 'Bags',
-        calendars: 'Calendars',
-        mugs: 'Mugs',
-        shirts: 'Shirts',
-        bags: 'Bags',
+        posters: "Posters",
+        caricatures: "Caricatures",
+        tshirts: "T-Shirts",
+        shirts: "Shirts",
+        bags: "Bags",
+        calendars: "Calendars",
+        mugs: "Mugs",
       },
-      contact: 'Contact',
     },
   }[lang];
 
   const scrollTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
     setMenuOpen(false);
     setProdOpen(false);
     setLangOpen(false);
@@ -82,28 +80,31 @@ export default function Header() {
     setProdOpen(false);
   };
 
-  // ✅ close dropdowns on outside click
   useEffect(() => {
     const onDown = (e) => {
-      if (prodRef.current && !prodRef.current.contains(e.target)) setProdOpen(false);
-      if (langRef.current && !langRef.current.contains(e.target)) setLangOpen(false);
+      if (prodRef.current && !prodRef.current.contains(e.target)) {
+        setProdOpen(false);
+      }
+      if (langRef.current && !langRef.current.contains(e.target)) {
+        setLangOpen(false);
+      }
     };
-    document.addEventListener('mousedown', onDown);
-    return () => document.removeEventListener('mousedown', onDown);
+
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
   }, []);
 
-  // ✅ close on ESC
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         closeAllMenus();
       }
     };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
+
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
   }, []);
 
-  // ✅ body scroll lock when menu is open (mobile)
   useEffect(() => {
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
@@ -127,16 +128,16 @@ export default function Header() {
       </Link>
 
       <nav className={styles.nav}>
-        {/* LEFT/MAIN LINKS (desktop inline, mobile slide menu) */}
-        <div className={`${styles.links} ${menuOpen ? styles.open : ''}`}>
-          <Link to={base} onClick={scrollTop}>{t.home}</Link>
+        <div className={`${styles.links} ${menuOpen ? styles.open : ""}`}>
+          <Link to={base} onClick={scrollTop}>
+            {t.home}
+          </Link>
 
-          {/* Products dropdown */}
           <div ref={prodRef} className={styles.productsWrap}>
             <button
               type="button"
               className={styles.productsBtn}
-              onClick={() => setProdOpen(v => !v)}
+              onClick={() => setProdOpen((v) => !v)}
             >
               {t.products} <span>▾</span>
             </button>
@@ -147,7 +148,10 @@ export default function Header() {
                   {t.items.posters}
                 </Link>
 
-                <Link to={`${base}/products?cat=caricatures`} onClick={onProductClick}>
+                <Link
+                  to={`${base}/products?cat=caricatures`}
+                  onClick={onProductClick}
+                >
                   {t.items.caricatures}
                 </Link>
 
@@ -163,7 +167,10 @@ export default function Header() {
                   {t.items.bags}
                 </Link>
 
-                <Link to={`${base}/products?cat=calendars`} onClick={onProductClick}>
+                <Link
+                  to={`${base}/products?cat=calendars`}
+                  onClick={onProductClick}
+                >
                   {t.items.calendars}
                 </Link>
 
@@ -174,37 +181,50 @@ export default function Header() {
             )}
           </div>
 
-          <Link to={`${base}/contact`} onClick={closeAllMenus}>{t.contact}</Link>
+          <Link to={`${base}/builder`} onClick={closeAllMenus}>
+            {t.builder}
+          </Link>
+
+          <Link to={`${base}/contact`} onClick={closeAllMenus}>
+            {t.contact}
+          </Link>
         </div>
 
-        {/* RIGHT ACTIONS (always visible) */}
         <div className={styles.actions}>
-          {/* Language always visible */}
           <div ref={langRef} className={styles.langWrap}>
             <button
               type="button"
-              className={`${styles.langBtn} ${langOpen ? styles.langBtnOpen : ''}`}
-              onClick={() => setLangOpen(v => !v)}
+              className={`${styles.langBtn} ${langOpen ? styles.langBtnOpen : ""}`}
+              onClick={() => setLangOpen((v) => !v)}
             >
               {lang.toUpperCase()} <span>▾</span>
             </button>
 
             {langOpen && (
               <div className={styles.langMenu}>
-                <button className={styles.langItem} onClick={() => switchLang('ka')}>
-                  ქართული <span>{lang === 'ka' && '✓'}</span>
+                <button
+                  type="button"
+                  className={styles.langItem}
+                  onClick={() => switchLang("ka")}
+                >
+                  ქართული <span>{lang === "ka" ? "✓" : ""}</span>
                 </button>
-                <button className={styles.langItem} onClick={() => switchLang('en')}>
-                  English <span>{lang === 'en' && '✓'}</span>
+
+                <button
+                  type="button"
+                  className={styles.langItem}
+                  onClick={() => switchLang("en")}
+                >
+                  English <span>{lang === "en" ? "✓" : ""}</span>
                 </button>
               </div>
             )}
           </div>
 
-          {/* burger (3 lines) */}
           <button
-            className={`${styles.burger} ${menuOpen ? styles.active : ''}`}
-            onClick={() => setMenuOpen(v => !v)}
+            type="button"
+            className={`${styles.burger} ${menuOpen ? styles.active : ""}`}
+            onClick={() => setMenuOpen((v) => !v)}
             aria-label="Menu"
           >
             <span />
@@ -213,7 +233,6 @@ export default function Header() {
           </button>
         </div>
 
-        {/* overlay for mobile menu */}
         {menuOpen && (
           <div className={styles.overlay} onClick={() => setMenuOpen(false)} />
         )}
