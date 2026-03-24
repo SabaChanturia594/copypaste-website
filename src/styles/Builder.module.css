@@ -26,9 +26,57 @@
   font-size: 15px;
 }
 
-.layout {
+.modeSwitch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 18px 0 10px;
+  max-width: 740px;
+}
+
+.modeBtn {
+  min-height: 56px;
+  border-radius: 18px;
+  border: 1px solid #d7deea;
+  background: #fff;
+  color: #14213d;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: 0.2s ease;
+}
+
+.modeBtn:hover {
+  transform: translateY(-1px);
+  border-color: #90a8ff;
+}
+
+.modeBtnActive {
+  background: #14213d;
+  color: #fff;
+  border-color: #14213d;
+}
+
+.modeEmoji {
+  font-size: 18px;
+}
+
+.modeDesc {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.builderShell {
   max-width: 1380px;
   margin: 0 auto;
+}
+
+.builderGrid {
   display: grid;
   grid-template-columns: 410px minmax(0, 1fr);
   gap: 18px;
@@ -206,6 +254,12 @@
   place-items: center;
   color: #64748b;
   font-size: 13px;
+}
+.printArea {
+  position: absolute;
+  border: 2px dashed rgba(20, 33, 61, 0.28);
+  border-radius: 10px;
+  pointer-events: none;
 }
 
 .layerItem {
@@ -441,13 +495,6 @@
   -webkit-user-drag: none;
 }
 
-.printArea {
-  position: absolute;
-  border: 3px dashed rgba(20, 33, 61, 0.35);
-  border-radius: 10px;
-  pointer-events: none;
-}
-
 .emptyPreview {
   position: absolute;
   inset: 0;
@@ -465,19 +512,28 @@
   z-index: 3;
 }
 
-.layerBoxActive {
-  outline: 2px solid #2563eb;
-  outline-offset: 2px;
+.layerBoxEditing {
+  border: 2px solid #2563eb;
+  box-sizing: border-box;
+}
+.layerImageInner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
 .layerImage {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: fill;
   display: block;
   user-select: none;
   -webkit-user-drag: none;
 }
+
 
 .textLayer {
   position: absolute;
@@ -513,7 +569,7 @@
 
 .badges {
   position: absolute;
-  left: 15px;
+  left: 14px;
   bottom: 14px;
   display: flex;
   gap: 8px;
@@ -573,7 +629,7 @@
 }
 
 @media (max-width: 1150px) {
-  .layout {
+  .builderGrid {
     grid-template-columns: 1fr;
   }
 
@@ -589,6 +645,10 @@
 @media (max-width: 640px) {
   .page {
     padding: 18px 10px 36px;
+  }
+
+  .modeSwitch {
+    grid-template-columns: 1fr;
   }
 
   .previewCard,
