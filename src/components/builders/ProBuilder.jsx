@@ -1118,7 +1118,7 @@ export default function ProBuilder({ lang = "ka" }) {
               >
                 {t.whatsapp}
               </a>
-              <a href="mailto:copypaste.tb@gmail.com" className={styles.emailBtn}>
+              <a href="CopyPasteTbilisi@gmail.com" className={styles.emailBtn}>
                 {t.email}
               </a>
             </div>
