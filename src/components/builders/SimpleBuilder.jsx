@@ -2,8 +2,10 @@ import { useMemo, useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import styles from "../../styles/Builder.module.css";
 
-import tshirtWhite from "../../assets/mockups/tshirt-white-front.jpg";
-import tshirtBlack from "../../assets/mockups/tshirt-black-front.jpg";
+import tshirtWhiteFront from "../../assets/mockups/tshirt-white-front.jpg";
+import tshirtBlackFront from "../../assets/mockups/tshirt-black-front.jpg";
+import tshirtWhiteBack from "../../assets/mockups/tshirt-white-back.png";
+import tshirtBlackBack from "../../assets/mockups/tshirt-black-back.png";
 
 const COLORS = [
   { key: "white", label: { ka: "თეთრი", en: "White" } },
@@ -13,8 +15,14 @@ const COLORS = [
 const SIZES = ["S", "M", "L", "XL", "XXL"];
 
 const MOCKUPS = {
-  white: tshirtWhite,
-  black: tshirtBlack,
+  front: {
+    white: tshirtWhiteFront,
+    black: tshirtBlackFront,
+  },
+  back: {
+    white: tshirtWhiteBack,
+    black: tshirtBlackBack,
+  },
 };
 
 const PRINT_SIZES_MM = {
@@ -27,7 +35,7 @@ const PRINT_SIZES_MM = {
 
 function getPrintArea(size) {
   const map = {
-    S: { x: 32, y: 30, w: 38, h: 55},
+    S: { x: 32, y: 30, w: 38, h: 55 },
     M: { x: 34, y: 30, w: 34, h: 51 },
     L: { x: 36, y: 30, w: 30, h: 47 },
     XL: { x: 37, y: 30, w: 28, h: 43 },
@@ -63,7 +71,7 @@ export default function SimpleBuilder({ lang = "ka" }) {
       upload: "დიზაინის ატვირთვა",
       reset: "საწყისზე დაბრუნება",
       remove: "წაშლა",
-      download: "პრევიუს გადმოწერა",
+      download: "სქრინშოტის შენახვა",
       downloading: "იტვირთება...",
       empty: "ატვირთე დიზაინი",
       tip: "მარტივი რეჟიმი — ერთი დიზაინი, სწრაფი მორგება",
@@ -77,6 +85,8 @@ export default function SimpleBuilder({ lang = "ka" }) {
       rotateLeft: "-90°",
       rotateRight: "90°",
       rotation: "მობრუნება",
+      front: "წინა",
+      back: "ზურგი",
     },
     en: {
       color: "Color",
@@ -84,7 +94,7 @@ export default function SimpleBuilder({ lang = "ka" }) {
       upload: "Upload design",
       reset: "Reset",
       remove: "Remove",
-      download: "Download preview",
+      download: "Save screenshot",
       downloading: "Downloading...",
       empty: "Upload a design",
       tip: "Simple mode — one design, quick placement",
@@ -98,12 +108,22 @@ export default function SimpleBuilder({ lang = "ka" }) {
       rotateLeft: "-90°",
       rotateRight: "90°",
       rotation: "Rotation",
+      front: "Front",
+      back: "Back",
     },
   }[lang];
 
+  const [side, setSide] = useState("front");
   const [color, setColor] = useState("white");
   const [size, setSize] = useState("M");
-  const [design, setDesign] = useState(null);
+  const [designs, setDesigns] = useState({
+    front: null,
+    back: null,
+  });
+  const [boxes, setBoxes] = useState({
+    front: { x: 30, y: 24, w: 18, h: 18, rotation: 0 },
+    back: { x: 30, y: 24, w: 18, h: 18, rotation: 0 },
+  });
   const [downloading, setDownloading] = useState(false);
   const [showGuides, setShowGuides] = useState(false);
 
@@ -120,15 +140,9 @@ export default function SimpleBuilder({ lang = "ka" }) {
   });
 
   const area = useMemo(() => getPrintArea(size), [size]);
-  const mockup = MOCKUPS[color];
-
-  const [box, setBox] = useState({
-    x: 30,
-    y: 24,
-    w: 18,
-    h: 18,
-    rotation: 0,
-  });
+  const mockup = MOCKUPS[side][color];
+  const design = designs[side];
+  const box = boxes[side];
 
   const getPoint = (clientX, clientY) => {
     const rect = previewRef.current?.getBoundingClientRect();
@@ -156,24 +170,42 @@ export default function SimpleBuilder({ lang = "ka" }) {
     };
   };
 
+  const updateCurrentBox = (updater) => {
+    setBoxes((prev) => {
+      const current = prev[side];
+      const next = typeof updater === "function" ? updater(current) : updater;
+      return {
+        ...prev,
+        [side]: clampBox(next),
+      };
+    });
+  };
+
   const onUpload = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
     reader.onload = () => {
-      setDesign(reader.result);
+      setDesigns((prev) => ({
+        ...prev,
+        [side]: reader.result,
+      }));
+
       setShowGuides(true);
-      setBox(
-        clampBox({
+
+      setBoxes((prev) => ({
+        ...prev,
+        [side]: clampBox({
           x: area.x + 3,
           y: area.y + 3,
           w: Math.min(18, area.w - 4),
           h: Math.min(18, area.h - 4),
           rotation: 0,
-        })
-      );
+        }),
+      }));
     };
+
     reader.readAsDataURL(file);
     e.target.value = "";
   };
@@ -236,23 +268,19 @@ export default function SimpleBuilder({ lang = "ka" }) {
     if (!point) return;
 
     if (g.mode === "drag") {
-      setBox((prev) =>
-        clampBox({
-          ...prev,
-          x: point.x - g.offsetX,
-          y: point.y - g.offsetY,
-        })
-      );
+      updateCurrentBox((prev) => ({
+        ...prev,
+        x: point.x - g.offsetX,
+        y: point.y - g.offsetY,
+      }));
     }
 
     if (g.mode === "resize") {
-      setBox((prev) =>
-        clampBox({
-          ...prev,
-          w: g.startW + (point.x - g.startX),
-          h: g.startH + (point.y - g.startY),
-        })
-      );
+      updateCurrentBox((prev) => ({
+        ...prev,
+        w: g.startW + (point.x - g.startX),
+        h: g.startH + (point.y - g.startY),
+      }));
     }
   };
 
@@ -287,13 +315,11 @@ export default function SimpleBuilder({ lang = "ka" }) {
       const currentDistance = distance(e.touches[0], e.touches[1]);
       const ratio = currentDistance / g.startDistance;
 
-      setBox((prev) =>
-        clampBox({
-          ...prev,
-          w: g.startW * ratio,
-          h: g.startH * ratio,
-        })
-      );
+      updateCurrentBox((prev) => ({
+        ...prev,
+        w: g.startW * ratio,
+        h: g.startH * ratio,
+      }));
       return;
     }
 
@@ -306,18 +332,16 @@ export default function SimpleBuilder({ lang = "ka" }) {
 
   const resizeBy = (dw, dh) => {
     setShowGuides(true);
-    setBox((prev) =>
-      clampBox({
-        ...prev,
-        w: prev.w + dw,
-        h: prev.h + dh,
-      })
-    );
+    updateCurrentBox((prev) => ({
+      ...prev,
+      w: prev.w + dw,
+      h: prev.h + dh,
+    }));
   };
 
   const rotateBy = (deg) => {
     setShowGuides(true);
-    setBox((prev) => ({
+    updateCurrentBox((prev) => ({
       ...prev,
       rotation: prev.rotation + deg,
     }));
@@ -325,25 +349,29 @@ export default function SimpleBuilder({ lang = "ka" }) {
 
   const resetDesign = () => {
     setShowGuides(true);
-    setBox(
-      clampBox({
+    setBoxes((prev) => ({
+      ...prev,
+      [side]: clampBox({
         x: area.x + 3,
         y: area.y + 3,
         w: Math.min(18, area.w - 4),
         h: Math.min(18, area.h - 4),
         rotation: 0,
-      })
-    );
+      }),
+    }));
   };
 
   const removeDesign = () => {
-    setDesign(null);
+    setDesigns((prev) => ({
+      ...prev,
+      [side]: null,
+    }));
     setShowGuides(false);
   };
 
   const mm = design ? getLayerSizeInMM(box, area, size) : null;
 
-  const handleDownload = async () => {
+  const handleScreenshot = async () => {
     if (!previewRef.current) return;
 
     const prevGuides = showGuides;
@@ -351,15 +379,16 @@ export default function SimpleBuilder({ lang = "ka" }) {
 
     try {
       setDownloading(true);
-      await new Promise((resolve) => setTimeout(resolve, 40));
+      await new Promise((r) => setTimeout(r, 50));
 
       const canvas = await html2canvas(previewRef.current, {
-        backgroundColor: null,
-        scale: 3,
+        backgroundColor: "#ffffff",
+        scale: 2,
         useCORS: true,
       });
+
       const link = document.createElement("a");
-      link.download = `copy-paste-simple-${color}-${size}.png`;
+      link.download = `copy-paste-${side}-${color}-${size}.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
     } catch (err) {
@@ -414,6 +443,32 @@ export default function SimpleBuilder({ lang = "ka" }) {
                     {item}
                   </button>
                 ))}
+              </div>
+            </div>
+
+            <div className={styles.section}>
+              <div className={styles.sideSwitch}>
+                <button
+                  type="button"
+                  className={side === "front" ? styles.activeSide : ""}
+                  onClick={() => {
+                    setSide("front");
+                    setShowGuides(false);
+                  }}
+                >
+                  {t.front}
+                </button>
+
+                <button
+                  type="button"
+                  className={side === "back" ? styles.activeSide : ""}
+                  onClick={() => {
+                    setSide("back");
+                    setShowGuides(false);
+                  }}
+                >
+                  {t.back}
+                </button>
               </div>
             </div>
 
@@ -527,7 +582,7 @@ export default function SimpleBuilder({ lang = "ka" }) {
             >
               <img
                 src={mockup}
-                alt={`tshirt ${color}`}
+                alt={`tshirt ${side} ${color}`}
                 className={styles.mockup}
                 draggable={false}
               />
@@ -546,16 +601,17 @@ export default function SimpleBuilder({ lang = "ka" }) {
 
               {design ? (
                 <div
-                    className={`${styles.layerBox} ${
-                        showGuides ? styles.layerBoxEditing : ""
-                    }`}
-                    style={{
-                        left: `${box.x}%`,
-                        top: `${box.y}%`,
-                        width: `${box.w}%`,
-                        height: `${box.h}%`,
-                    }}
-
+                  className={`${styles.layerBox} ${
+                    showGuides ? styles.layerBoxEditing : ""
+                  }`}
+                  style={{
+                    left: `${box.x}%`,
+                    top: `${box.y}%`,
+                    width: `${box.w}%`,
+                    height: `${box.h}%`,
+                    transform: `rotate(${box.rotation}deg)`,
+                    transformOrigin: "center center",
+                  }}
                   onMouseDown={startDrag}
                   onTouchStart={onTouchStartBox}
                   onClick={(e) => {
@@ -564,17 +620,13 @@ export default function SimpleBuilder({ lang = "ka" }) {
                   }}
                 >
                   <div className={styles.layerImageInner}>
-                   <img
-                    src={design}
-                    alt="Uploaded design"
-                    className={styles.layerImage}
-                    draggable={false}
-                    style={{
-                        transform: `rotate(${box.rotation}deg)`,
-                        transformOrigin: "center center",
-                    }}
+                    <img
+                      src={design}
+                      alt="Uploaded design"
+                      className={styles.layerImage}
+                      draggable={false}
                     />
-                    </div>
+                  </div>
 
                   {showGuides && (
                     <span
@@ -590,6 +642,7 @@ export default function SimpleBuilder({ lang = "ka" }) {
 
               <div className={styles.badges}>
                 <span className={styles.badge}>{size}</span>
+                <span className={styles.badge}>{side}</span>
                 {mm && (
                   <span className={styles.badge}>
                     {mm.widthMM}mm × {mm.heightMM}mm
@@ -602,7 +655,7 @@ export default function SimpleBuilder({ lang = "ka" }) {
               <button
                 type="button"
                 className={styles.downloadBtn}
-                onClick={handleDownload}
+                onClick={handleScreenshot}
                 disabled={downloading}
               >
                 {downloading ? t.downloading : t.download}
@@ -621,7 +674,10 @@ export default function SimpleBuilder({ lang = "ka" }) {
               >
                 {t.whatsapp}
               </a>
-              <a href="CopyPasteTbilisi@gmail.com" className={styles.emailBtn}>
+              <a
+                href="mailto:CopyPasteTbilisi@gmail.com"
+                className={styles.emailBtn}
+              >
                 {t.email}
               </a>
             </div>

@@ -221,6 +221,25 @@
   line-height: 1.55;
   color: #64748b;
 }
+.sideSwitch {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.sideSwitch button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.activeSide {
+  background: #14213d;
+  color: white;
+}
 
 .primaryWideBtn {
   width: 100%;
@@ -307,6 +326,18 @@
   font-size: 13px;
   color: #14213d;
   font-weight: 700;
+}
+.layerImage {
+  object-fit: contain;
+}
+
+.layerBox {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  cursor: move;
+}
+.preview {
+  transform: translateZ(0);
 }
 
 .layerDims {

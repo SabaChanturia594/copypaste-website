@@ -2,8 +2,10 @@ import { useMemo, useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import styles from "../../styles/Builder.module.css";
 
-import tshirtWhite from "../../assets/mockups/tshirt-white-front.jpg";
-import tshirtBlack from "../../assets/mockups/tshirt-black-front.jpg";
+import tshirtWhiteFront from "../../assets/mockups/tshirt-white-front.jpg";
+import tshirtBlackFront from "../../assets/mockups/tshirt-black-front.jpg";
+import tshirtWhiteBack from "../../assets/mockups/tshirt-white-back.png";
+import tshirtBlackBack from "../../assets/mockups/tshirt-black-back.png";
 
 const COLORS = [
   { key: "white", label: { ka: "თეთრი", en: "White" } },
@@ -13,8 +15,14 @@ const COLORS = [
 const SIZES = ["S", "M", "L", "XL", "XXL"];
 
 const MOCKUPS = {
-  white: tshirtWhite,
-  black: tshirtBlack,
+  front: {
+    white: tshirtWhiteFront,
+    black: tshirtBlackFront,
+  },
+  back: {
+    white: tshirtWhiteBack,
+    black: tshirtBlackBack,
+  },
 };
 
 const FONT_OPTIONS = [
@@ -37,11 +45,11 @@ const PRINT_SIZES_MM = {
 
 function getPrintArea(size) {
   const map = {
-    S: { x: 29, y: 22, w: 31, h: 41 },
-    M: { x: 27, y: 21, w: 35, h: 44 },
-    L: { x: 25, y: 20, w: 39, h: 47 },
-    XL: { x: 23, y: 19, w: 43, h: 50 },
-    XXL: { x: 22, y: 18, w: 46, h: 52 },
+    S: { x: 0, y: 0, w: 100, h: 100 },
+    M: { x: 0, y: 0, w: 100, h: 100},
+    L: { x: 0, y: 0, w: 100, h: 100},
+    XL: { x: 0, y: 0, w: 100, h: 100 },
+    XXL: { x: 0, y: 0, w: 100, h: 100 },
   };
 
   return map[size] || map.M;
@@ -61,10 +69,13 @@ function getLayerBox(layer) {
 function clampLayerToArea(layer, area) {
   const { width, height } = getLayerBox(layer);
 
+  const maxX = area.x + area.w - width;
+  const maxY = area.y + area.h - height;
+
   return {
     ...layer,
-    x: clamp(layer.x, area.x, area.x + area.w - width),
-    y: clamp(layer.y, area.y, area.y + area.h - height),
+    x: clamp(layer.x, area.x, maxX < area.x ? area.x : maxX),
+    y: clamp(layer.y, area.y, maxY < area.y ? area.y : maxY),
   };
 }
 
@@ -98,6 +109,7 @@ export default function ProBuilder({ lang = "ka" }) {
       textLabel: "ტექსტი",
       selected: "მონიშნული",
       front: "წინა მხარე",
+      back: "უკანა მხარე",
       quality: "საბეჭდად რეკომენდებულია მაღალი ხარისხის PNG/JPG.",
       tip: "ფოტო და ტექსტი არ გაცდება საბეჭდ არეალს. მუშაობს drag, resize და pinch zoom.",
       bigger: "გადიდება",
@@ -120,7 +132,7 @@ export default function ProBuilder({ lang = "ka" }) {
       textSize: "ზომა",
       normal: "ჩვეულებრივი",
       bold: "გამუქებული",
-      download: "პრევიუს გადმოწერა",
+      screenshot: "სქრინშოთის გადაღება",
       downloading: "იტვირთება...",
       copyOrder: "ინფორმაციის კოპირება",
       emptyPreview: "ატვირთე ფოტო ან დაამატე ტექსტი",
@@ -135,6 +147,7 @@ export default function ProBuilder({ lang = "ka" }) {
       currentSize: "მიმდინარე ზომა",
       maxArea: "მაქსიმალური არე",
       mm: "მმ",
+      side: "მხარე",
     },
     en: {
       color: "Color",
@@ -148,6 +161,7 @@ export default function ProBuilder({ lang = "ka" }) {
       textLabel: "Text",
       selected: "Selected",
       front: "Front side",
+      back: "Back side",
       quality: "High-quality PNG/JPG is recommended for printing.",
       tip: "Images and text cannot go outside the printable area. Drag, resize and pinch zoom are supported.",
       bigger: "Bigger",
@@ -170,7 +184,7 @@ export default function ProBuilder({ lang = "ka" }) {
       textSize: "Size",
       normal: "Normal",
       bold: "Bold",
-      download: "Download preview",
+      screenshot: "Take screenshot",
       downloading: "Downloading...",
       copyOrder: "Copy order info",
       emptyPreview: "Upload an image or add text",
@@ -185,9 +199,11 @@ export default function ProBuilder({ lang = "ka" }) {
       currentSize: "Current size",
       maxArea: "Max area",
       mm: "mm",
+      side: "Side",
     },
   }[lang];
 
+  const [side, setSide] = useState("front");
   const [color, setColor] = useState("white");
   const [size, setSize] = useState("M");
   const [layers, setLayers] = useState([]);
@@ -206,8 +222,16 @@ export default function ProBuilder({ lang = "ka" }) {
   });
 
   const area = useMemo(() => getPrintArea(size), [size]);
-  const mockup = MOCKUPS[color];
-  const selectedLayer = layers.find((layer) => layer.id === selectedId) || null;
+  const mockup = MOCKUPS[side][color];
+
+  const visibleLayers = useMemo(
+    () => layers.filter((layer) => layer.side === side),
+    [layers, side]
+  );
+
+  const selectedLayer =
+    visibleLayers.find((layer) => layer.id === selectedId) || null;
+
   const selectedLayerMM = selectedLayer
     ? getLayerSizeInMM(selectedLayer, area, size)
     : null;
@@ -216,7 +240,8 @@ export default function ProBuilder({ lang = "ka" }) {
     setLayers((prev) =>
       prev.map((layer) => {
         if (layer.id !== id) return layer;
-        const nextLayer = typeof updater === "function" ? updater(layer) : updater;
+        const nextLayer =
+          typeof updater === "function" ? updater(layer) : updater;
         return clampLayerToArea(nextLayer, area);
       })
     );
@@ -240,6 +265,7 @@ export default function ProBuilder({ lang = "ka" }) {
           const newLayer = {
             id: `${Date.now()}-${idx}-${Math.random().toString(36).slice(2, 8)}`,
             type: "image",
+            side,
             name: file.name,
             src: reader.result,
             x: area.x + 2 + idx * 1.3,
@@ -268,7 +294,8 @@ export default function ProBuilder({ lang = "ka" }) {
     const newLayer = {
       id: `${Date.now()}-text-${Math.random().toString(36).slice(2, 8)}`,
       type: "text",
-      name: `${t.textLabel} ${layers.filter((l) => l.type === "text").length + 1}`,
+      side,
+      name: `${t.textLabel} ${visibleLayers.filter((l) => l.type === "text").length + 1}`,
       text: lang === "ka" ? "ჩემი ტექსტი" : "My text",
       x: area.x + 4,
       y: area.y + 4,
@@ -311,10 +338,18 @@ export default function ProBuilder({ lang = "ka" }) {
     if (!selectedId) return;
 
     setLayers((prev) => {
-      const index = prev.findIndex((l) => l.id === selectedId);
-      if (index === -1 || index === prev.length - 1) return prev;
+      const visible = prev.filter((l) => l.side === side);
+      const visibleIndex = visible.findIndex((l) => l.id === selectedId);
+      if (visibleIndex === -1 || visibleIndex === visible.length - 1) return prev;
+
+      const currentId = visible[visibleIndex].id;
+      const nextId = visible[visibleIndex + 1].id;
+
       const next = [...prev];
-      [next[index], next[index + 1]] = [next[index + 1], next[index]];
+      const currentIndex = next.findIndex((l) => l.id === currentId);
+      const nextIndex = next.findIndex((l) => l.id === nextId);
+
+      [next[currentIndex], next[nextIndex]] = [next[nextIndex], next[currentIndex]];
       return next;
     });
   };
@@ -323,10 +358,18 @@ export default function ProBuilder({ lang = "ka" }) {
     if (!selectedId) return;
 
     setLayers((prev) => {
-      const index = prev.findIndex((l) => l.id === selectedId);
-      if (index <= 0) return prev;
+      const visible = prev.filter((l) => l.side === side);
+      const visibleIndex = visible.findIndex((l) => l.id === selectedId);
+      if (visibleIndex <= 0) return prev;
+
+      const currentId = visible[visibleIndex].id;
+      const prevId = visible[visibleIndex - 1].id;
+
       const next = [...prev];
-      [next[index], next[index - 1]] = [next[index - 1], next[index]];
+      const currentIndex = next.findIndex((l) => l.id === currentId);
+      const prevIndex = next.findIndex((l) => l.id === prevId);
+
+      [next[currentIndex], next[prevIndex]] = [next[prevIndex], next[currentIndex]];
       return next;
     });
   };
@@ -526,20 +569,23 @@ export default function ProBuilder({ lang = "ka" }) {
     gestureRef.current.layerId = null;
   };
 
-  const handleDownload = async () => {
+  const handleScreenshot = async () => {
     if (!previewRef.current) return;
 
     try {
       setDownloading(true);
 
+      await new Promise((r) => setTimeout(r, 50));
+
       const canvas = await html2canvas(previewRef.current, {
-        backgroundColor: null,
-        scale: 3,
+        backgroundColor: "#ffffff",
+        scale: 2,
         useCORS: true,
+        logging: false,
       });
 
       const link = document.createElement("a");
-      link.download = `copy-paste-pro-${color}-${size}.png`;
+      link.download = `copy-paste-pro-${side}-${color}-${size}.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
     } catch (err) {
@@ -564,6 +610,7 @@ export default function ProBuilder({ lang = "ka" }) {
       const mm = getLayerSizeInMM(layer, area, size);
 
       lines.push(`${index + 1}. ${layer.type === "text" ? "Text" : "Image"}`);
+      lines.push(`Side: ${layer.side}`);
       lines.push(`Name: ${layer.name}`);
       lines.push(`Width: ${mm.widthMM} mm`);
       lines.push(`Height: ${mm.heightMM} mm`);
@@ -640,6 +687,32 @@ export default function ProBuilder({ lang = "ka" }) {
             </div>
 
             <div className={styles.section}>
+              <div className={styles.sideSwitch}>
+                <button
+                  type="button"
+                  className={side === "front" ? styles.activeSide : ""}
+                  onClick={() => {
+                    setSide("front");
+                    setSelectedId(null);
+                  }}
+                >
+                  {t.front}
+                </button>
+
+                <button
+                  type="button"
+                  className={side === "back" ? styles.activeSide : ""}
+                  onClick={() => {
+                    setSide("back");
+                    setSelectedId(null);
+                  }}
+                >
+                  {t.back}
+                </button>
+              </div>
+            </div>
+
+            <div className={styles.section}>
               <div className={styles.sectionTitle}>
                 <span className={styles.sectionEmoji}>🖼️</span>
                 <span>{t.upload}</span>
@@ -682,10 +755,10 @@ export default function ProBuilder({ lang = "ka" }) {
                 <span>{t.elements}</span>
               </div>
               <div className={styles.layersList}>
-                {layers.length === 0 ? (
+                {visibleLayers.length === 0 ? (
                   <div className={styles.emptyLayers}>{t.noElements}</div>
                 ) : (
-                  layers.map((layer, index) => {
+                  visibleLayers.map((layer, index) => {
                     const mm = getLayerSizeInMM(layer, area, size);
 
                     return (
@@ -949,6 +1022,10 @@ export default function ProBuilder({ lang = "ka" }) {
                   <strong>{size}</strong>
                 </div>
                 <div className={styles.infoRow}>
+                  <span>{t.side}</span>
+                  <strong>{side === "front" ? t.front : t.back}</strong>
+                </div>
+                <div className={styles.infoRow}>
                   <span>{t.maxArea}</span>
                   <strong>
                     {PRINT_SIZES_MM[size].width}mm × {PRINT_SIZES_MM[size].height}mm
@@ -988,16 +1065,16 @@ export default function ProBuilder({ lang = "ka" }) {
             >
               <img
                 src={mockup}
-                alt={`tshirt ${color}`}
+                alt={`tshirt ${color} ${side}`}
                 className={styles.mockup}
                 draggable={false}
               />
 
-              {layers.length === 0 && (
+              {visibleLayers.length === 0 && (
                 <div className={styles.emptyPreview}>{t.emptyPreview}</div>
               )}
 
-              {layers.map((layer) => {
+              {visibleLayers.map((layer) => {
                 const { width, height } = getLayerBox(layer);
                 const isActive = layer.id === selectedId;
 
@@ -1077,7 +1154,9 @@ export default function ProBuilder({ lang = "ka" }) {
 
               <div className={styles.badges}>
                 <span className={styles.badge}>{size}</span>
-                <span className={styles.badge}>{t.front}</span>
+                <span className={styles.badge}>
+                  {side === "front" ? t.front : t.back}
+                </span>
                 {selectedLayer && <span className={styles.badge}>{t.selected}</span>}
                 {selectedLayerMM && (
                   <span className={styles.badge}>
@@ -1091,10 +1170,10 @@ export default function ProBuilder({ lang = "ka" }) {
               <button
                 type="button"
                 className={styles.downloadBtn}
-                onClick={handleDownload}
+                onClick={handleScreenshot}
                 disabled={downloading}
               >
-                {downloading ? t.downloading : t.download}
+                {downloading ? t.downloading : t.screenshot}
               </button>
 
               <button
@@ -1118,7 +1197,10 @@ export default function ProBuilder({ lang = "ka" }) {
               >
                 {t.whatsapp}
               </a>
-              <a href="CopyPasteTbilisi@gmail.com" className={styles.emailBtn}>
+              <a
+                href="mailto:CopyPasteTbilisi@gmail.com"
+                className={styles.emailBtn}
+              >
                 {t.email}
               </a>
             </div>

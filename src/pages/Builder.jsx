@@ -21,7 +21,7 @@ export default function Builder() {
         "აირჩიე მარტივი ან პროფესიონალური რეჟიმი და მოარგე დიზაინი მაისურს.",
       simple: "მარტივი დიზაინი",
       pro: "პროფესიონალური დიზაინი",
-      simpleDesc: "ატვირთე ერთი დიზაინი და სწრაფად მოარგე მაისურს",
+      simpleDesc: "ატვირთე პოსტერი და სწრაფად მოარგე მაისურს",
       proDesc:
         "შექმენი დიზაინი რამდენიმე ფოტოთი, ტექსტით და ზუსტი ზომებით",
     },
@@ -31,7 +31,7 @@ export default function Builder() {
         "Choose a simple or professional mode and place your design on a T-shirt.",
       simple: "Simple Design",
       pro: "Professional Design",
-      simpleDesc: "Upload one design and quickly place it on a T-shirt",
+      simpleDesc: "Upload poster and quickly place it on a T-shirt",
       proDesc: "Build a design with multiple images, text and exact sizes",
     },
   }[lang];
