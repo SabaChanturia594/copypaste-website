@@ -3,6 +3,7 @@
    SAFE GLOBAL BASE
    (won’t break components)
    ===================== */
+   @import url('https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Bebas+Neue&family=Bungee&family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Inter:wght@400;600;700;900&family=Kaushan+Script&family=Lobster&family=Montserrat:wght@400;600;700;900&family=Oswald:wght@400;700&family=Pacifico&family=Playfair+Display:wght@400;700&family=Poppins:wght@400;500;600;700;800&family=Raleway:wght@400;700&family=Satisfy&family=Teko:wght@400;600;700&display=swap');
 
 /* 1) Minimal reset */
 *,

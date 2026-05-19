@@ -661,6 +661,48 @@ export default function SimpleBuilder({ lang = "ka" }) {
                 {downloading ? t.downloading : t.download}
               </button>
             </div>
+            <div className={styles.mobileToolbar}>
+              <label className={styles.mobileTool}>
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  className={styles.fileInput}
+                  onChange={onUpload}
+                />
+                <span>🖼️</span>
+                <small>{t.upload}</small>
+              </label>
+
+              <button
+                type="button"
+                className={styles.mobileTool}
+                onClick={() => resizeBy(2, 2)}
+                disabled={!design}
+              >
+                <span>＋</span>
+                <small>{t.bigger}</small>
+              </button>
+
+              <button
+                type="button"
+                className={styles.mobileTool}
+                onClick={() => rotateBy(90)}
+                disabled={!design}
+              >
+                <span>↻</span>
+                <small>{t.rotateRight}</small>
+              </button>
+
+              <button
+                type="button"
+                className={styles.mobileTool}
+                onClick={handleScreenshot}
+                disabled={downloading}
+              >
+                <span>📸</span>
+                <small>{downloading ? t.downloading : t.download}</small>
+              </button>
+            </div>
           </div>
 
           <div className={styles.sendCard}>

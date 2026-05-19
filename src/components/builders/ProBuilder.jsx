@@ -45,15 +45,16 @@ const PRINT_SIZES_MM = {
 
 function getPrintArea(size) {
   const map = {
-    S: { x: 0, y: 0, w: 100, h: 100 },
-    M: { x: 0, y: 0, w: 100, h: 100},
-    L: { x: 0, y: 0, w: 100, h: 100},
-    XL: { x: 0, y: 0, w: 100, h: 100 },
-    XXL: { x: 0, y: 0, w: 100, h: 100 },
+    S: { x: 20, y: 20, w: 60, h: 65 },
+    M: { x: 20, y: 20, w: 60, h: 65},
+    L: { x: 20, y: 20, w: 60, h: 65},
+    XL: { x: 20, y: 20, w: 60, h:65 },
+    XXL: { x: 20, y: 20, w: 60, h: 65 },
   };
 
   return map[size] || map.M;
 }
+
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(value, max));
@@ -1069,6 +1070,15 @@ export default function ProBuilder({ lang = "ka" }) {
                 className={styles.mockup}
                 draggable={false}
               />
+              <div
+  className={styles.printArea}
+  style={{
+    left: `${area.x}%`,
+    top: `${area.y}%`,
+    width: `${area.w}%`,
+    height: `${area.h}%`,
+  }}
+/>
 
               {visibleLayers.length === 0 && (
                 <div className={styles.emptyPreview}>{t.emptyPreview}</div>
@@ -1078,42 +1088,61 @@ export default function ProBuilder({ lang = "ka" }) {
                 const { width, height } = getLayerBox(layer);
                 const isActive = layer.id === selectedId;
 
-                if (layer.type === "text") {
-                  return (
-                    <div
-                      key={layer.id}
-                      className={`${styles.textLayer} ${
-                        isActive ? styles.textLayerActive : ""
-                      }`}
-                      style={{
-                        left: `${layer.x}%`,
-                        top: `${layer.y}%`,
-                        width: `${width}%`,
-                        minHeight: `${height}%`,
-                        color: layer.textColor,
-                        fontFamily: layer.fontFamily,
-                        fontWeight: layer.fontWeight,
-                        fontSize: `${layer.fontSize}px`,
-                        transform: `rotate(${layer.rotation}deg)`,
-                      }}
-                      onMouseDown={(e) => startDrag(e, layer)}
-                      onTouchStart={(e) => onTouchStartLayer(e, layer)}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedId(layer.id);
-                      }}
-                    >
-                      {layer.text}
-                      {isActive && (
-                        <span
-                          className={styles.resizeHandle}
-                          onMouseDown={(e) => startResize(e, layer)}
-                          onTouchStart={(e) => startResize(e, layer)}
-                        />
-                      )}
-                    </div>
-                  );
-                }
+                  if (layer.type === "text") {
+  return (
+    <div
+      key={layer.id}
+      className={`${styles.textLayer} ${
+        isActive ? styles.textLayerActive : ""
+      }`}
+      style={{
+        left: `${layer.x}%`,
+        top: `${layer.y}%`,
+        width: `${width}%`,
+        minHeight: `${height}%`,
+        color: layer.textColor,
+        fontFamily: layer.fontFamily,
+        fontWeight: layer.fontWeight,
+        fontSize: `${layer.fontSize}px`,
+        transform: `rotate(${layer.rotation}deg)`,
+      }}
+      onMouseDown={(e) => startDrag(e, layer)}
+      onTouchStart={(e) => onTouchStartLayer(e, layer)}
+      onClick={(e) => {
+        e.stopPropagation();
+        setSelectedId(layer.id);
+      }}
+    >
+    <div
+  contentEditable
+  suppressContentEditableWarning
+  className={styles.liveText}
+  onMouseDown={(e) => e.stopPropagation()}
+  onTouchStart={(e) => e.stopPropagation()}
+  onClick={(e) => {
+    e.stopPropagation();
+    setSelectedId(layer.id);
+  }}
+  onInput={(e) =>
+    updateLayer(layer.id, {
+      text: e.currentTarget.textContent,
+      name: e.currentTarget.textContent,
+    })
+  }
+>
+  {layer.text}
+</div>
+
+      {isActive && (
+        <span
+          className={styles.resizeHandle}
+          onMouseDown={(e) => startResize(e, layer)}
+          onTouchStart={(e) => startResize(e, layer)}
+        />
+      )}
+    </div>
+  );
+}
 
                 return (
                   <div
